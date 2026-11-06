@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://namnguyen95800-coder.github.io/sitemap.xml
