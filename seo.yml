@@ -1,0 +1,298 @@
+name: Tạo trang giới thiệu cho Google
+
+# Chạy thủ công: Actions > Tạo trang giới thiệu cho Google > Run workflow
+# Tạo 25 trang công cụ, trang tổng hợp cong-cu.html, sitemap.xml, robots.txt rồi lưu vào repo.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tạo các trang
+        run: |
+          python3 - <<'PY'
+          import html, json, os, datetime
+          BASE = 'https://namnguyen95800-coder.github.io/'
+          APK = 'https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk'
+          OUT = os.environ.get('OUT', '.')
+          T = [
+           dict(k='sw', slug='bam-gio', name='Bấm giờ',
+            title='Bấm giờ online miễn phí, ghi từng vòng',
+            desc='Đồng hồ bấm giờ online miễn phí: bấm bắt đầu, ghi từng vòng, dừng lại để xem thời gian. Dùng trên điện thoại, máy tính và app Android.',
+            lead='Bấm giờ đếm thời gian từ 0 lên, cho phép ghi từng vòng để theo dõi tốc độ khi chạy bộ, bơi, làm bài hay bất kỳ việc gì cần đo thời gian.',
+            feats=['Ghi vòng bằng một lần bấm; mỗi lần dừng cũng được tính là một vòng','Phím tắt trên máy tính: Space bắt đầu hoặc dừng, L ghi vòng, R đặt lại','Chế độ tập trung toàn màn hình với số lớn, dễ nhìn từ xa','Trên app Android, đồng hồ hiện trên thanh thông báo và chạy tiếp khi bạn dùng app khác'],
+            steps=['Mở Bấm giờ và nhấn Bắt đầu.','Nhấn ghi vòng mỗi khi muốn lưu lại một mốc.','Nhấn Dừng khi xong và xem danh sách vòng.','Nhấn Đặt lại để đo lần mới.'],
+            faq=[('Bấm giờ khác đếm ngược thế nào?','Bấm giờ đếm lên từ 0 để đo một việc mất bao lâu. Đếm ngược đếm xuống từ một mốc đặt trước và báo khi hết giờ.'),('Tắt màn hình thì sao?','Trên trình duyệt nên giữ trang mở. Với app Android, đồng hồ có thông báo riêng và chạy tiếp khi bạn chuyển sang app khác.')],
+            rel=['dem-nguoc','pomodoro','tap-luyen']),
+           dict(k='cd', slug='dem-nguoc', name='Đếm ngược',
+            title='Đếm ngược thời gian online, hẹn giờ có chuông',
+            desc='Hẹn giờ đếm ngược online: đặt phút và giây, hết giờ có tiếng báo. Có sẵn mẫu luộc trứng, pha trà, ngủ trưa, đắp mặt nạ. Miễn phí.',
+            lead='Đếm ngược là công cụ hẹn giờ đơn giản nhất: đặt số phút giây, bấm bắt đầu và nghe tiếng báo khi hết giờ.',
+            feats=['Đặt phút và giây tuỳ ý, hết giờ có tiếng báo','Thư viện mẫu: trà 3 phút, trứng lòng đào 6 phút 30, ngủ trưa 20 phút, đắp mặt nạ 15 phút...','Lưu mẫu riêng của bạn và chia sẻ mẫu bằng liên kết','Trên app Android, chuông vẫn kêu khi tắt màn hình và thanh thông báo hiện số giờ còn lại'],
+            steps=['Nhập số phút và giây, hoặc chọn một mẫu trong Thư viện mẫu.','Nhấn Bắt đầu.','Khi hết giờ sẽ có tiếng báo; chọn kiểu tiếng ở ô Tiếng báo.','Nhấn Đặt lại để hẹn giờ mới.'],
+            faq=[('Hết giờ có tiếng báo không?','Có. Bạn chọn một trong bốn kiểu tiếng: Bíp, Chuông, Còi, Nhẹ. Hãy bật âm thanh và giữ trang mở khi dùng trên trình duyệt.'),('Đặt được bao lâu?','Bạn nhập số phút tuỳ ý, phù hợp cho cả việc ngắn như luộc trứng lẫn việc kéo dài hơn.')],
+            rel=['pomodoro','hen-gio-nau-an','bam-gio']),
+           dict(k='pomo', slug='pomodoro', name='Pomodoro',
+            title='Đồng hồ Pomodoro online, 25 phút tập trung',
+            desc='Đồng hồ Pomodoro online miễn phí: làm việc tập trung rồi nghỉ ngắn, sau 4 phiên nghỉ dài, tự chuyển giai đoạn. Có thống kê, nhạc nền, mẫu sẵn.',
+            lead='Phương pháp Pomodoro chia công việc thành các phiên tập trung ngắn, xen kẽ những quãng nghỉ. Công cụ này tự đếm và tự chuyển giai đoạn giúp bạn.',
+            feats=['Mẫu quen thuộc 25/5, ngoài ra có 50/10, 15/3, 30/5, 90/20 và tự chỉnh theo ý bạn','Sau 4 phiên là nghỉ dài, tự chuyển giai đoạn không cần bấm','Ghi vào Thống kê và Lịch để xem chuỗi ngày tập trung','Nghe nhạc có sẵn trong máy, tự phát lúc làm việc và dừng lúc nghỉ (bật Theo Pomodoro trong Nhạc của tôi)','Đọc to giai đoạn mới bằng giọng nói nếu bạn bật Đọc giờ'],
+            steps=['Chọn mẫu (ví dụ 25/5) hoặc nhập thời gian làm việc, nghỉ ngắn, nghỉ dài.','Nhấn Bắt đầu và chỉ làm một việc trong phiên.','Khi có tiếng báo, nghỉ đúng giờ. Đồng hồ tự chuyển sang phiên tiếp theo.','Cuối ngày mở Thống kê để xem bạn tập trung được bao lâu.'],
+            faq=[('Pomodoro là gì?','Một phương pháp quản lý thời gian do Francesco Cirillo đề xuất: làm việc theo các phiên ngắn (thường 25 phút) xen kẽ nghỉ ngắn, sau vài phiên thì nghỉ dài hơn.'),('Có thể đổi thời gian không?','Có. Bạn đặt riêng thời gian làm việc, nghỉ ngắn và nghỉ dài, rồi lưu thành mẫu.'),('Nhạc nền hoạt động thế nào?','Mở công cụ Nhạc của tôi, thêm nhạc từ máy rồi bật Theo Pomodoro: nhạc tự phát lúc làm việc và dừng lúc nghỉ.')],
+            rel=['nhac-nen','ghi-gio-cong-viec','hit-tho']),
+           dict(k='iv', slug='tap-luyen', name='Tập luyện',
+            title='Hẹn giờ tập luyện HIIT, Tabata, plank online',
+            desc='Đồng hồ HIIT, Tabata online: đặt thời gian tập, nghỉ và số vòng, có tiếng báo mỗi khi đổi giai đoạn. Mẫu Tabata 20/10, plank, nhảy dây. Miễn phí.',
+            lead='Hẹn giờ tập luyện chia buổi tập thành các hiệp tập và nghỉ xen kẽ. Hợp cho HIIT, Tabata, plank, nhảy dây, chạy ngắt quãng.',
+            feats=['Đặt giây tập, giây nghỉ và số vòng','Thư viện mẫu: Tabata 20/10, HIIT 40/20, plank, nhảy dây, kéo giãn...','Tiếng bíp mỗi khi đổi giai đoạn; bật Đọc giờ để máy đọc tên giai đoạn','Dùng được khi tắt màn hình trên app Android'],
+            steps=['Chọn một mẫu hoặc nhập giây tập, giây nghỉ, số vòng.','Nhấn Bắt đầu và tập theo tiếng báo.','Đặt điện thoại trong tầm nhìn, hoặc bật Đọc giờ để nghe thay vì nhìn.'],
+            faq=[('Tabata là gì?','Một dạng HIIT: 20 giây tập hết sức, 10 giây nghỉ, lặp lại 8 vòng, tổng 4 phút.'),('Có đếm vòng không?','Có. Bạn đặt số vòng trước, đồng hồ tự chạy hết các vòng.')],
+            rel=['pomodoro','chuoi-buoc','hit-tho']),
+           dict(k='seq', slug='chuoi-buoc', name='Chuỗi bước',
+            title='Hẹn giờ nhiều bước, tạo quy trình có sẵn thời gian',
+            desc='Tạo quy trình nhiều bước nối nhau, mỗi bước có thời gian riêng: buổi sáng, thiền, ôn thi, nấu mì. Lưu thành mẫu dùng lại. Miễn phí.',
+            lead='Chuỗi bước giúp bạn chạy cả một quy trình chỉ với một lần bấm: mỗi bước có tên và thời gian, hết bước này tự chuyển sang bước sau.',
+            feats=['Thêm bao nhiêu bước tuỳ ý, mỗi bước một tên và thời gian','Thư viện mẫu: buổi sáng, thiền sáng, ôn thi 90 phút, nấu mì, dọn nhà nhanh, giãn cơ văn phòng...','Lưu quy trình riêng thành mẫu và chia sẻ bằng liên kết','Đọc tên bước mới bằng giọng nói khi bật Đọc giờ'],
+            steps=['Chọn mẫu hoặc thêm từng bước (tên, thời gian).','Nhấn Bắt đầu.','Nghe tiếng báo khi sang bước mới.','Lưu lại thành mẫu để dùng ngày mai.'],
+            faq=[('Khác gì Pomodoro?','Pomodoro lặp làm việc và nghỉ theo công thức cố định. Chuỗi bước cho bạn tự đặt từng bước khác nhau trong một quy trình.'),('Có lưu lại được không?','Có. Bạn lưu thành mẫu riêng và gọi lại bất cứ lúc nào.')],
+            rel=['dem-nguoc','tap-luyen','pomodoro']),
+           dict(k='exam', slug='dong-ho-thi', name='Đồng hồ thi',
+            title='Đồng hồ thi online, tính giờ làm bài có mốc nhắc',
+            desc='Đồng hồ thi online: đặt tổng thời gian làm bài và các mốc báo còn 30, 15, 5, 1 phút. Có mẫu thi 45, 90, 120 phút, IELTS, TOEIC. Miễn phí.',
+            lead='Đồng hồ thi giúp bạn canh giờ làm bài: đặt tổng thời gian và những mốc còn lại bao nhiêu phút thì báo.',
+            feats=['Đặt tổng thời gian và tối đa 4 mốc báo','Mẫu: thi 15, 45, 60, 90, 120 phút, IELTS Reading, IELTS Writing, TOEIC','Chế độ toàn màn hình, số lớn dễ nhìn','Phím tắt Space bắt đầu hoặc dừng, R đặt lại'],
+            steps=['Chọn mẫu hoặc nhập tổng phút, giây và các mốc báo.','Nhấn Bắt đầu khi bắt đầu làm bài.','Nghe báo ở từng mốc để chia thời gian cho các phần.','Mốc lớn hơn hoặc bằng tổng thời gian sẽ bị bỏ qua, để 0 là không dùng.'],
+            faq=[('Dùng trong phòng thi được không?','Tuỳ quy định của từng kỳ thi. Nhiều phòng thi không cho phép điện thoại, hãy hỏi trước. Công cụ hợp nhất để luyện đề ở nhà.'),('Có luyện đề IELTS, TOEIC được không?','Có. Chọn mẫu IELTS Reading, IELTS Writing hoặc TOEIC để có sẵn thời gian và mốc báo.')],
+            rel=['dem-nguoc','pomodoro','dong-ho-de-ban']),
+           dict(k='days', slug='dem-ngay', name='Đếm ngày',
+            title='Đếm ngược ngày Tết, sinh nhật, ngày thi online',
+            desc='Đếm ngược số ngày đến Tết Nguyên Đán, Trung thu, Giỗ Tổ, sinh nhật, ngày thi. Có sẵn ngày lễ Việt Nam, tự tính theo lịch âm. Miễn phí.',
+            lead='Đếm ngày cho bạn biết còn bao nhiêu ngày đến một sự kiện quan trọng: Tết, kỳ thi, chuyến du lịch hay sinh nhật.',
+            feats=['Có sẵn các ngày lễ Việt Nam: Tết Nguyên Đán, Tết Trung thu, Giỗ Tổ Hùng Vương, Quốc khánh, Giải phóng miền Nam, Nhà giáo Việt Nam, Giáng sinh...','Ngày âm lịch được tự tính cho từng năm','Thêm sự kiện riêng bằng tên và ngày','Màn hình chính có dải Sắp tới cho các mốc gần nhất'],
+            steps=['Chọn ngày lễ có sẵn hoặc gõ tên sự kiện và chọn ngày.','Nhấn Thêm.','Xem số ngày còn lại; xoá sự kiện khi không cần nữa.'],
+            faq=[('Tết Nguyên Đán năm nay là ngày nào?','Công cụ tự đổi ngày 1 tháng Giêng âm lịch sang dương lịch của năm hiện tại hoặc năm sau, bạn không cần tra lịch.'),('Dữ liệu lưu ở đâu?','Trong trình duyệt hoặc app trên máy bạn, không gửi đi đâu.')],
+            rel=['lich-am','tinh-ngay','tinh-tuoi']),
+           dict(k='chess', slug='dong-ho-co-vua', name='Đồng hồ cờ vua',
+            title='Đồng hồ cờ vua online, có tăng thời gian mỗi nước',
+            desc='Đồng hồ cờ vua online cho hai người: Bullet, Blitz, Rapid, tăng thời gian mỗi nước đi. Dùng trên điện thoại, toàn màn hình. Miễn phí.',
+            lead='Đồng hồ cờ vua dành cho hai người chơi: mỗi người một đồng hồ riêng, chạm nút bên mình sau khi đi để chuyển lượt.',
+            feats=['Mẫu: Bullet 1+0, Blitz 3+2, Blitz 5+3, Rapid 10+0, Rapid 15+10, cổ điển 30+0','Tuỳ chỉnh số phút, giây và thời gian cộng thêm mỗi nước','Nút phía trên xoay ngược cho người ngồi đối diện','Toàn màn hình, trên app Android tự xoay ngang'],
+            steps=['Chọn mẫu hoặc nhập phút, giây, thời gian cộng thêm.','Nhấn Bắt đầu.','Sau mỗi nước đi, chạm nút bên mình để chuyển đồng hồ cho đối thủ.','Nhấn P để tạm dừng hoặc R để đặt lại.'],
+            faq=[('3+2 nghĩa là gì?','3 phút cho mỗi người, mỗi nước đi được cộng thêm 2 giây.'),('Dùng chung một điện thoại được không?','Được. Đặt điện thoại giữa hai người, mỗi người chạm nút ở phía mình.')],
+            rel=['dem-nguoc','dong-ho-thi','bam-gio']),
+           dict(k='cook', slug='hen-gio-nau-an', name='Nấu ăn',
+            title='Hẹn giờ nấu ăn nhiều món cùng lúc online',
+            desc='Hẹn giờ nấu ăn nhiều món cùng lúc: luộc, hầm, nướng, mỗi món một đồng hồ riêng, tạm dừng được, báo khi xong. Miễn phí.',
+            lead='Khi nấu nhiều món, mỗi món cần một mốc thời gian khác nhau. Hẹn giờ nấu ăn cho phép chạy nhiều đồng hồ song song, mỗi món một tên.',
+            feats=['Thêm bao nhiêu món cũng được, mỗi món một đồng hồ','Gõ tên món và số phút rồi nhấn Enter','Tạm dừng hoặc xoá từng món','Trên app Android có thông báo riêng cho từng món'],
+            steps=['Gõ tên món (ví dụ: canh) và số phút.','Nhấn Enter hoặc nút Thêm để chạy.','Mỗi món báo riêng khi đủ giờ.'],
+            faq=[('Có tắt trang được không?','Trên trình duyệt hãy giữ trang mở khi đang nấu. Với app Android, các món có báo thức hệ thống nên vẫn báo khi bạn dùng ứng dụng khác.'),('Hợp nấu những món nào?','Luộc trứng, hầm xương, nướng bánh, hấp xôi... bất kỳ món nào cần canh giờ.')],
+            rel=['dem-nguoc','chuoi-buoc','nhac-nho']),
+           dict(k='breath', slug='hit-tho', name='Hít thở',
+            title='Bài tập hít thở 4-7-8, thở hộp, thở sâu online',
+            desc='Hướng dẫn hít thở có vòng tròn to nhỏ theo nhịp: 4-7-8, thở hộp, 5-5, 4-6, 6-6, thở dài. Chọn 1 đến 10 phút, có chuông nhẹ. Miễn phí.',
+            lead='Hít thở có nhịp giúp bạn chậm lại. Vòng tròn phình ra là hít vào, thu nhỏ lại là thở ra, và đổi màu theo từng giai đoạn.',
+            feats=['6 kiểu thở: 4-7-8, hộp 4-4-4-4, đều 5-5, thư giãn 4-6, cân bằng 6-6, thở dài 2+1+6','Chọn thời lượng 1, 3, 5, 10 phút hoặc không giới hạn','Chuông nhẹ và rung nhẹ khi đổi giai đoạn, bật tắt riêng','Tự ghi vào Thống kê khi thở từ 20 giây trở lên'],
+            steps=['Chọn kiểu thở và thời lượng.','Nhấn Bắt đầu, ngồi thoải mái, nhìn vòng tròn.','Hít vào khi vòng to ra, thở ra khi vòng thu lại.','Kết thúc sẽ có chuông nhẹ và tổng số vòng.'],
+            faq=[('Thở 4-7-8 là gì?','Hít vào 4 giây, giữ hơi 7 giây, thở ra 8 giây. Nhiều người dùng để thư giãn trước khi ngủ.'),('Đây có phải lời khuyên y tế không?','Không. Đây là bài tập thư giãn thông thường. Nếu bạn có bệnh hô hấp, tim mạch hoặc thấy chóng mặt, hãy dừng lại và hỏi bác sĩ.')],
+            rel=['tinh-gio-ngu','pomodoro','nhac-nen']),
+           dict(k='rem', slug='nhac-nho', name='Nhắc nhở',
+            title='Nhắc nghỉ mắt 20-20-20, nhắc uống nước định kỳ',
+            desc='Nhắc nhở lặp lại theo chu kỳ: cứ 20 phút nghỉ mắt, cứ 1 giờ uống nước hay đứng dậy vận động. Miễn phí, dùng ngay trên trình duyệt.',
+            lead='Công cụ nhắc nhở lặp lại sau mỗi khoảng thời gian bạn đặt, hợp để nhắc nghỉ mắt, uống nước, đứng dậy khi làm việc lâu.',
+            feats=['Đặt nhiều nhắc nhở, mỗi cái một chu kỳ riêng, ví dụ cứ 20 phút nghỉ mắt','Màn hình được giữ sáng khi có nhắc nhở đang chạy','Gõ nội dung rồi nhấn Enter để thêm'],
+            steps=['Gõ nội dung nhắc (ví dụ: Nghỉ mắt) và số phút.','Nhấn Enter hoặc nút Thêm.','Giữ trang mở; mỗi chu kỳ sẽ có thông báo.'],
+            faq=[('Quy tắc 20-20-20 là gì?','Cứ 20 phút nhìn màn hình, hãy nhìn vật ở xa khoảng 6 mét trong 20 giây để mắt được nghỉ.'),('Có chạy khi tắt trang không?','Công cụ này cần để trang mở thì mới nhắc đúng giờ.')],
+            rel=['pomodoro','ghi-gio-cong-viec','hit-tho']),
+           dict(k='world', slug='gio-the-gioi', name='Giờ thế giới',
+            title='Giờ thế giới online, xem giờ nhiều thành phố',
+            desc='Xem giờ nhiều thành phố cùng lúc và chênh lệch giờ so với máy bạn. Hợp để hẹn họp, gọi điện cho người thân ở nước ngoài. Miễn phí.',
+            lead='Giờ thế giới hiển thị giờ hiện tại của nhiều thành phố, kèm chênh lệch so với múi giờ trên máy của bạn.',
+            feats=['Thêm nhiều thành phố, xem giờ cùng lúc','Hiện chênh lệch giờ so với múi giờ của máy','Tự tính đúng giờ mùa hè, mùa đông của từng nơi'],
+            steps=['Chọn thành phố trong danh sách.','Nhấn Thêm.','Muốn hẹn họp nhiều nước, dùng thêm công cụ Họp chung.'],
+            faq=[('Có tính giờ mùa hè không?','Có, múi giờ được lấy từ hệ thống nên đúng theo từng thời điểm trong năm.'),('Làm sao tìm giờ họp chung?','Dùng công cụ Họp chung để xem khung giờ mà mọi người đều đang trong giờ làm.')],
+            rel=['gio-hop-chung','mat-troi-moc-lan','tinh-gio-ngu']),
+           dict(k='sleep', slug='tinh-gio-ngu', name='Tính giờ ngủ',
+            title='Tính giờ đi ngủ và thức dậy theo chu kỳ 90 phút',
+            desc='Nhập giờ cần thức dậy để biết nên đi ngủ lúc nào, hoặc nhập giờ đi ngủ để biết nên dậy lúc nào, theo chu kỳ ngủ khoảng 90 phút. Miễn phí.',
+            lead='Giấc ngủ diễn ra theo các chu kỳ khoảng 90 phút. Công cụ gợi ý giờ ngủ hoặc giờ dậy sao cho bạn thức giấc ở cuối một chu kỳ.',
+            feats=['Hai cách tính: từ giờ cần dậy hoặc từ giờ đi ngủ','Gợi ý nhiều mốc theo số chu kỳ','Chạy ngay trên trình duyệt, không cần đăng ký'],
+            steps=['Chọn tính theo giờ thức dậy hoặc giờ đi ngủ.','Nhập giờ.','Chọn một trong các mốc gợi ý.'],
+            faq=[('90 phút có đúng với mọi người không?','Đây là con số trung bình, mỗi người hơi khác nhau. Hãy xem như gợi ý và điều chỉnh theo cảm giác của bạn.'),('Nên ngủ mấy chu kỳ?','Nhiều người ngủ 5 đến 6 chu kỳ mỗi đêm; nhu cầu thực tế khác nhau theo tuổi và sức khoẻ.')],
+            rel=['hit-tho','dong-ho-de-ban','cong-tru-gio']),
+           dict(k='dcalc', slug='tinh-ngay', name='Tính ngày',
+            title='Tính số ngày giữa hai ngày, cộng trừ ngày tháng',
+            desc='Tính số ngày giữa hai ngày bất kỳ, hoặc cộng trừ ngày, tuần, tháng, năm từ một ngày. Hợp để tính hạn, thời gian làm việc. Miễn phí.',
+            lead='Tính ngày trả lời hai câu hỏi thường gặp: từ ngày này đến ngày kia là bao nhiêu ngày, và ngày X cộng thêm N ngày là ngày nào.',
+            feats=['Số ngày giữa hai ngày','Cộng hoặc trừ ngày, tuần, tháng, năm','Kết quả tức thì, không cần đăng ký'],
+            steps=['Chọn chế độ khoảng cách hoặc cộng trừ.','Chọn ngày và số lượng.','Xem kết quả ngay.'],
+            faq=[('Có tính cả ngày bắt đầu không?','Khoảng cách tính từ ngày này đến ngày kia, tức là hiệu số ngày giữa hai mốc.'),('Dùng để tính hạn hợp đồng được không?','Dùng để tham khảo nhanh. Với văn bản pháp lý, hãy đối chiếu cách tính của chính văn bản đó.')],
+            rel=['dem-ngay','tinh-tuoi','lich-am']),
+           dict(k='lunar', slug='lich-am', name='Âm lịch',
+            title='Đổi lịch âm dương online, xem ngày âm hôm nay',
+            desc='Đổi ngày dương lịch sang âm lịch và ngược lại, hỗ trợ tháng nhuận, xem can chi và ngày Tết sắp tới. Miễn phí, chạy không cần mạng.',
+            lead='Công cụ đổi lịch giữa dương lịch và âm lịch, kèm ngày âm hôm nay, can chi của năm và ngày Tết Nguyên Đán sắp tới.',
+            feats=['Dương sang âm và âm sang dương, hỗ trợ tháng nhuận','Hiện ngày âm của hôm nay và năm can chi','Tự tính ngày Tết Nguyên Đán gần nhất','Tính toán ngay trong máy, không cần mạng'],
+            steps=['Chọn ngày dương để xem ngày âm tương ứng.','Hoặc nhập ngày, tháng, năm âm (chọn tháng nhuận nếu cần) để ra ngày dương.','Xem Tết sắp tới ở đầu trang.'],
+            faq=[('Thuật toán lấy từ đâu?','Công cụ dùng thuật toán chuyển đổi âm dương lịch phổ biến của Hồ Ngọc Đức, tính theo múi giờ Việt Nam (UTC+7).'),('Có chính xác không?','Ngày Tết 2025 và 2026 đã được đối chiếu khớp. Với việc quan trọng như cưới hỏi, hãy đối chiếu thêm với lịch chính thức.')],
+            rel=['dem-ngay','tinh-tuoi','tinh-ngay']),
+           dict(k='age', slug='tinh-tuoi', name='Tính tuổi',
+            title='Tính tuổi chính xác theo năm, tháng, ngày',
+            desc='Nhập ngày sinh để biết tuổi chính xác theo năm, tháng, ngày, tổng số ngày và giờ đã sống, còn bao nhiêu ngày đến sinh nhật. Miễn phí.',
+            lead='Tính tuổi cho biết bạn đã sống bao nhiêu năm, tháng, ngày, cùng số ngày còn lại đến sinh nhật tiếp theo.',
+            feats=['Tuổi theo năm, tháng, ngày','Tổng số ngày và giờ đã sống','Số ngày đến sinh nhật, thứ trong tuần của ngày sinh, năm sinh âm lịch'],
+            steps=['Chọn ngày sinh.','Xem kết quả hiện ngay bên dưới.','Ngày sinh được nhớ cho lần sau.'],
+            faq=[('Tuổi mụ khác tuổi thường thế nào?','Tuổi mụ tính từ lúc thụ thai và tăng theo Tết, thường hơn tuổi dương 1 đến 2 tuổi. Công cụ này tính tuổi dương lịch.'),('Dữ liệu có bị gửi đi không?','Không. Ngày sinh chỉ lưu trong máy bạn.')],
+            rel=['lich-am','tinh-ngay','dem-ngay']),
+           dict(k='hms', slug='cong-tru-gio', name='Cộng trừ giờ',
+            title='Cộng trừ giờ phút, tính số giờ làm giữa hai mốc',
+            desc='Tính khoảng giờ giữa hai mốc (kể cả qua nửa đêm) và cộng trừ giờ phút. Hợp để tính giờ làm ca, thời gian học. Miễn phí.',
+            lead='Cộng trừ giờ giúp bạn tính nhanh: từ 8:15 đến 17:40 là mấy giờ, và 2:45 cộng 1:30 là bao nhiêu.',
+            feats=['Khoảng giờ giữa hai mốc, xử lý được ca qua nửa đêm','Cộng hoặc trừ hai khoảng giờ:phút','Hiện thêm kết quả dạng số giờ thập phân'],
+            steps=['Chọn giờ bắt đầu và giờ kết thúc để ra số giờ.','Hoặc nhập hai số giờ:phút rồi chọn cộng hoặc trừ.'],
+            faq=[('Làm ca đêm thì sao?','Nếu giờ kết thúc nhỏ hơn giờ bắt đầu, công cụ hiểu là đã qua nửa đêm.'),('Số giờ thập phân dùng để làm gì?','Để nhân với lương giờ hoặc nhập vào bảng tính.')],
+            rel=['tinh-luong-gio','ghi-gio-cong-viec','tinh-ngay']),
+           dict(k='desk', slug='dong-ho-de-ban', name='Đồng hồ để bàn',
+            title='Đồng hồ để bàn online, số lớn, kiểu lật, kim',
+            desc='Đồng hồ để bàn toàn màn hình với 5 kiểu: số lớn, đồng hồ lật, neon, tối giản, kim. Giữ sáng màn hình, giảm sáng ban đêm. Miễn phí.',
+            lead='Biến điện thoại hoặc máy tính thành đồng hồ để bàn: số lớn dễ nhìn, toàn màn hình, màn hình luôn sáng.',
+            feats=['5 kiểu: số lớn, đồng hồ lật, neon, tối giản, đồng hồ kim','Đổi 12 hoặc 24 giờ, bật tắt giây','Toàn màn hình, trên app Android ẩn cả thanh hệ thống','Nút Giảm sáng cho đồng hồ đầu giường (app Android)'],
+            steps=['Mở Đồng hồ để bàn và chọn kiểu.','Nhấn Toàn màn hình.','Phím tắt trên máy tính: F toàn màn hình, T đổi kiểu, H đổi 12/24 giờ, S hiện giây.'],
+            faq=[('Đặt cả đêm được không?','Được, nên cắm sạc. Trên app Android có nút Giảm sáng để đỡ chói.'),('Màn hình có tự tắt không?','Công cụ giữ màn hình sáng khi đang mở.')],
+            rel=['dong-ho-thi','tinh-gio-ngu','mat-troi-moc-lan']),
+           dict(k='wage', slug='tinh-luong-gio', name='Tính lương giờ',
+            title='Tính lương theo giờ và tiền tăng ca 150% 200% 300%',
+            desc='Ước tính lương theo giờ làm và tiền tăng ca: ngày thường 150%, cuối tuần 200%, ngày lễ 300%. Công cụ tham khảo, miễn phí.',
+            lead='Nhập lương một giờ, số giờ làm và số giờ tăng ca để ước tính tổng thu nhập trong tháng.',
+            feats=['Hệ số tăng ca 150% (ngày thường), 200% (cuối tuần), 300% (ngày lễ)','Hiện chi tiết từng khoản và tổng','Nhớ lại số liệu lần trước của bạn'],
+            steps=['Nhập lương một giờ (đồng) và số giờ làm thường.','Nhập số giờ tăng ca từng loại.','Xem tổng ước tính.'],
+            faq=[('Có tính thuế và bảo hiểm không?','Không. Đây là ước tính trước thuế và bảo hiểm, chưa tính phụ cấp ca đêm.'),('Hệ số tăng ca có đúng luật không?','Các hệ số 150%, 200%, 300% là mức tối thiểu thường gặp theo Bộ luật Lao động Việt Nam. Hãy đối chiếu với hợp đồng của bạn.')],
+            rel=['cong-tru-gio','ghi-gio-cong-viec','tinh-ngay']),
+           dict(k='habit', slug='chuoi-thoi-quen', name='Chuỗi thói quen',
+            title='Theo dõi thói quen hằng ngày, đếm chuỗi ngày liên tiếp',
+            desc='Đánh dấu thói quen mỗi ngày và xem chuỗi ngày liên tiếp. Có lịch tháng để bù ngày đã qua. Miễn phí, lưu ngay trên máy bạn.',
+            lead='Chuỗi thói quen giúp bạn giữ đều một việc nhỏ mỗi ngày bằng cách đếm số ngày liên tiếp bạn đã làm.',
+            feats=['Thêm nhiều thói quen, mỗi cái một chuỗi riêng','Bấm Hôm nay khi hoàn thành','Lịch tháng cho từng thói quen, bấm ngày để đánh dấu hoặc bỏ đánh dấu','Hiện chuỗi hiện tại và chuỗi dài nhất'],
+            steps=['Gõ tên thói quen và nhấn Enter.','Mỗi ngày bấm Hôm nay khi làm xong.','Bấm biểu tượng lịch để mở lịch tháng và bù ngày quên.'],
+            faq=[('Quên một ngày thì chuỗi sao?','Chuỗi tính các ngày liên tiếp, bỏ một ngày thì chuỗi hiện tại bắt đầu lại. Chuỗi dài nhất vẫn được giữ.'),('Có đồng bộ giữa các máy không?','Không. Dữ liệu lưu trên từng máy.')],
+            rel=['pomodoro','ghi-gio-cong-viec','hit-tho']),
+           dict(k='sun', slug='mat-troi-moc-lan', name='Mặt trời mọc lặn',
+            title='Giờ mặt trời mọc lặn hôm nay, giờ vàng chụp ảnh',
+            desc='Xem giờ mặt trời mọc, lặn, độ dài ngày và giờ vàng chụp ảnh ở các thành phố Việt Nam. Miễn phí, tính ngay trên máy.',
+            lead='Công cụ tính giờ mặt trời mọc và lặn theo thành phố và ngày bạn chọn, kèm độ dài ban ngày và khung giờ vàng để chụp ảnh.',
+            feats=['8 thành phố: Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Hải Phòng, Huế, Nha Trang, Đà Lạt, Cần Thơ','Giờ mọc, giờ lặn, độ dài ngày','Giờ vàng chụp ảnh: một giờ sau khi mọc và một giờ trước khi lặn'],
+            steps=['Chọn thành phố.','Chọn ngày.','Xem giờ mọc, lặn và giờ vàng.'],
+            faq=[('Sai số bao nhiêu?','Giờ tính bằng công thức thiên văn nên có thể lệch vài phút so với dự báo chính thức.'),('Giờ vàng là gì?','Khoảng thời gian ngay sau khi mặt trời mọc và trước khi lặn, ánh sáng dịu, rất hợp để chụp ảnh.')],
+            rel=['dong-ho-de-ban','gio-the-gioi','tinh-gio-ngu']),
+           dict(k='metro', slug='may-go-nhip', name='Máy gõ nhịp',
+            title='Máy gõ nhịp online, chỉnh BPM, tăng tốc dần',
+            desc='Máy gõ nhịp (metronome) online: chỉnh BPM, số phách, phách mạnh nhẹ, chia nhịp, 4 âm sắc và chế độ tăng tốc dần để luyện đàn. Miễn phí.',
+            lead='Máy gõ nhịp giữ nhịp đều cho người tập đàn, trống, hát. Bạn chỉnh tốc độ BPM, số phách mỗi ô nhịp và nhấn mạnh phách nào tuỳ ý.',
+            feats=['BPM từ 30 đến 240, nút chỉnh ±1, ±5, thanh trượt và gõ nhịp tự đo','Nhịp mẫu 2/4, 3/4, 4/4, 5/4, 6/8, tự đặt phách mạnh, nhẹ hoặc tắt tiếng','Chia nhỏ nhịp: nốt đen, đôi, ba, tư','4 âm sắc: tích tắc, gỗ, trống, chuông','Tăng tốc dần: cứ vài ô nhịp tăng BPM đến mức đích'],
+            steps=['Đặt BPM hoặc gõ nhịp theo bài mẫu.','Chọn nhịp mẫu và bấm vào từng chấm để đổi phách.','Nhấn Bắt đầu; muốn luyện tăng tốc thì bật Tăng tốc dần.'],
+            faq=[('BPM là gì?','Số phách trong một phút. 60 BPM là mỗi giây một phách.'),('Tập đàn thế nào hiệu quả?','Bắt đầu chậm, chơi đúng rồi mới tăng. Chế độ tăng tốc dần giúp tăng từng bước nhỏ.')],
+            rel=['nhac-nen','pomodoro','hit-tho']),
+           dict(k='music', slug='nhac-nen', name='Nhạc của tôi',
+            title='Nghe nhạc nền khi làm việc, nhạc trong máy, âm mưa',
+            desc='Phát nhạc có sẵn trong máy làm nhạc nền, tự phát lúc làm việc theo Pomodoro, kèm âm thanh mưa, sóng biển, gió, lửa trại. Miễn phí.',
+            lead='Nhạc của tôi cho bạn nghe nhạc đã có trong điện thoại ngay trong công cụ, và kết nối với Pomodoro để nhạc chỉ phát lúc làm việc.',
+            feats=['Thêm nhạc từ máy (mp3, m4a, flac...), lưu danh sách','Phát ngẫu nhiên hoặc lặp cả danh sách, một bài','Theo Pomodoro: tự phát lúc làm việc, dừng lúc nghỉ','Trên app Android nhạc phát nền, có điều khiển trên thanh thông báo và màn hình khoá','Âm thanh tập trung tạo sẵn: mưa, ồn trắng, ồn nâu, sóng biển, gió, lửa trại'],
+            steps=['Mở Nhạc của tôi, bấm Thêm nhạc từ máy và chọn bài.','Bấm phát; chỉnh âm lượng riêng.','Bật Theo Pomodoro nếu muốn nhạc đi cùng phiên làm việc.'],
+            faq=[('Nhạc có bị tải lên mạng không?','Không. Nhạc nằm trong máy bạn, app chỉ phát lại.'),('Có phát khi tắt màn hình không?','Trên app Android thì có. Trên trình duyệt, nhạc có thể dừng khi bạn đóng trang.')],
+            rel=['pomodoro','may-go-nhip','hit-tho']),
+           dict(k='track', slug='ghi-gio-cong-viec', name='Ghi giờ công việc',
+            title='Ghi giờ công việc, theo dõi thời gian từng việc',
+            desc='Ghi lại thời gian bạn dành cho từng việc: bấm bắt đầu, dừng và lưu. Xem tổng 7 ngày theo việc, tự vào thống kê và lịch. Miễn phí.',
+            lead='Ghi giờ giúp bạn biết thời gian thật sự đi đâu: mỗi việc bạn làm được ghi lại thành một phiên có giờ bắt đầu và kết thúc.',
+            feats=['Gõ tên việc hoặc chọn lại việc gần đây','Đồng hồ tiếp tục chạy kể cả khi bạn thoát app rồi mở lại','Biểu đồ thanh 7 ngày theo từng việc','Mỗi phiên tự vào Thống kê và Lịch','Thông báo có số giờ và nút dừng trên app Android'],
+            steps=['Gõ việc bạn sắp làm và nhấn Bắt đầu.','Làm xong thì nhấn Dừng và lưu.','Cuối tuần xem việc nào tốn nhiều thời gian nhất.'],
+            faq=[('Phiên ngắn có được lưu không?','Phiên dưới 5 giây sẽ bị bỏ qua. Phiên từ 20 giây trở lên được cộng vào thống kê.'),('Có xuất ra bảng tính không?','Thống kê tổng hợp có thể xuất CSV từ mục Mục tiêu, xuất và xoá dữ liệu.')],
+            rel=['pomodoro','tinh-luong-gio','chuoi-thoi-quen']),
+           dict(k='meet', slug='gio-hop-chung', name='Họp chung',
+            title='Tìm giờ họp chung nhiều múi giờ, giờ họp quốc tế',
+            desc='Chọn tối đa 4 thành phố để tìm khung giờ họp mà mọi người đều trong giờ làm. Tính đúng giờ mùa hè, mùa đông. Miễn phí.',
+            lead='Họp với đồng nghiệp hay khách hàng ở nhiều nước rất dễ nhầm giờ. Công cụ này hiện bảng 24 giờ và tô màu giờ nào phù hợp với tất cả.',
+            feats=['15 thành phố phổ biến, chọn tối đa 4','Tô xanh giờ làm 9h–18h, vàng giờ chấp nhận được 7h–22h, xám giờ ban đêm','Gợi ý khung giờ cả nhóm đều trong giờ làm','Tự tính giờ mùa hè, mùa đông theo ngày bạn chọn'],
+            steps=['Chọn các thành phố, thành phố đầu tiên là mốc giờ của bạn.','Chọn ngày họp.','Đọc các khung giờ được gợi ý hoặc nhìn dòng được tô đậm.'],
+            faq=[('Dấu +1 hoặc −1 nghĩa là gì?','Giờ đó ở thành phố ấy đã sang ngày kế tiếp (+1) hoặc còn ngày hôm trước (−1) so với mốc của bạn.'),('Không có khung nào phù hợp thì sao?','Hãy xem khung vàng (chấp nhận được) hoặc luân phiên giờ bất tiện giữa các lần họp.')],
+            rel=['gio-the-gioi','mat-troi-moc-lan','dong-ho-thi']),
+          ]
+          BY = {t['slug']: t for t in T}
+          CSS = ('*{box-sizing:border-box}body{margin:0;font:17px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f6f8fa;color:#14202b}'
+           '@media(prefers-color-scheme:dark){body{background:#0d1620;color:#e6edf3}a{color:#5eead4}.card{background:#14202b!important;border-color:#233446!important}}'
+           'header,main,footer{max-width:760px;margin:0 auto;padding:14px 18px}header{display:flex;justify-content:space-between;align-items:center;gap:10px}'
+           'header a.brand{font-weight:800;text-decoration:none;color:inherit}h1{font-size:28px;line-height:1.25;margin:10px 0}h2{font-size:20px;margin:28px 0 8px}'
+           'a{color:#0f766e}.cta{display:inline-block;margin:10px 0;padding:14px 22px;border-radius:14px;background:#2dbe9d;color:#04231c;font-weight:800;text-decoration:none}'
+           '.card{background:#fff;border:1px solid #dde6ee;border-radius:14px;padding:12px 16px;margin:8px 0}.small{font-size:14px;opacity:.8}'
+           'ul,ol{padding-left:22px}li{margin:4px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}.grid a{display:block;text-decoration:none}.grid b{display:block}')
+          def esc(x): return html.escape(x, quote=True)
+          def page(t):
+              url = BASE + t['slug']
+              app = BASE + '?tool=' + t['k']
+              faq = [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in t['faq']]
+              ld = [{'@context': 'https://schema.org', '@type': 'SoftwareApplication', 'name': 'Bấm giờ: ' + t['name'], 'applicationCategory': 'UtilitiesApplication', 'operatingSystem': 'Web, Android', 'url': url, 'description': t['desc'], 'inLanguage': 'vi', 'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'VND'}},
+                    {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faq},
+                    {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Bấm giờ', 'item': BASE}, {'@type': 'ListItem', 'position': 2, 'name': 'Công cụ', 'item': BASE + 'cong-cu'}, {'@type': 'ListItem', 'position': 3, 'name': t['name'], 'item': url}]}]
+              rel = ''.join('<a class="card" href="%s"><b>%s</b>%s</a>' % (r, esc(BY[r]['name']), esc(BY[r]['title'])) for r in t['rel'])
+              allv = ' · '.join('<a href="%s">%s</a>' % (x['slug'], esc(x['name'])) for x in T)
+              return ('<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+                '<title>%s | Bấm giờ</title><meta name="description" content="%s"><link rel="canonical" href="%s">'
+                '<meta name="theme-color" content="#0b1d2a"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json">'
+                '<meta property="og:type" content="website"><meta property="og:locale" content="vi_VN"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%sog-image.png">'
+                '<meta name="twitter:card" content="summary_large_image">'
+                '<script type="application/ld+json">%s</script><style>%s</style></head><body>'
+                '<header><a class="brand" href="./">⏱ Bấm giờ</a><a href="cong-cu">Tất cả công cụ</a></header><main>'
+                '<h1>%s</h1><p>%s</p><a class="cta" href="%s">Mở %s ngay</a><p class="small">Miễn phí, không cần đăng ký, chạy ngay trên trình duyệt.</p>'
+                '<h2>Công cụ này làm được gì</h2><ul>%s</ul><h2>Cách dùng</h2><ol>%s</ol>'
+                '<h2>Câu hỏi thường gặp</h2>%s<h2>Công cụ liên quan</h2>%s'
+                '<h2>Cài thành app</h2><p>Bấm giờ có thể cài lên màn hình chính từ trình duyệt, hoặc tải bản Android để dùng thông báo, nhạc chạy nền và đọc giờ bằng giọng nói. <a href="%s">Tải app Android (APK)</a>. Dữ liệu của bạn lưu ngay trong máy, không gửi lên máy chủ.</p>'
+                '</main><footer class="small"><p>%s</p><p><a href="./">Trang chủ Bấm giờ</a></p></footer></body></html>') % (
+                esc(t['title']), esc(t['desc']), url, esc(t['title']), esc(t['desc']), url, BASE,
+                json.dumps(ld, ensure_ascii=False).replace('</', '<\\/'), CSS,
+                esc(t['title']), esc(t['lead']), app, esc(t['name']),
+                ''.join('<li>%s</li>' % esc(f) for f in t['feats']), ''.join('<li>%s</li>' % esc(s) for s in t['steps']),
+                ''.join('<div class="card"><b>%s</b><div>%s</div></div>' % (esc(q), esc(a)) for q, a in t['faq']), rel, APK, allv)
+          def hub():
+              items = ''.join('<a class="card" href="%s"><b>%s</b>%s</a>' % (t['slug'], esc(t['name']), esc(t['desc'])) for t in T)
+              ld = {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': 'Tất cả công cụ Bấm giờ', 'url': BASE + 'cong-cu', 'inLanguage': 'vi'}
+              return ('<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+                '<title>Tất cả công cụ: đồng hồ, hẹn giờ, lịch âm, tính ngày | Bấm giờ</title>'
+                '<meta name="description" content="25 công cụ thời gian miễn phí: bấm giờ, đếm ngược, Pomodoro, lịch âm, tính tuổi, máy gõ nhịp, giờ họp chung và nhiều hơn nữa.">'
+                '<link rel="canonical" href="%scong-cu"><meta name="theme-color" content="#0b1d2a"><link rel="icon" href="icon-192.png">'
+                '<script type="application/ld+json">%s</script><style>%s</style></head><body><header><a class="brand" href="./">⏱ Bấm giờ</a><a href="./">Mở ứng dụng</a></header>'
+                '<main><h1>Tất cả công cụ của Bấm giờ</h1><p>Hơn hai mươi công cụ về thời gian, miễn phí, không cần đăng ký, dùng được trên điện thoại và máy tính.</p><div class="grid">%s</div></main></body></html>') % (BASE, json.dumps(ld, ensure_ascii=False), CSS, items)
+          os.makedirs(OUT, exist_ok=True)
+          for t in T:
+              open(os.path.join(OUT, t['slug'] + '.html'), 'w', encoding='utf-8').write(page(t))
+          open(os.path.join(OUT, 'cong-cu.html'), 'w', encoding='utf-8').write(hub())
+          today = datetime.date.today().isoformat()
+          urls = [BASE, BASE + 'cong-cu'] + [BASE + t['slug'] for t in T]
+          open(os.path.join(OUT, 'sitemap.xml'), 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join('<url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (u, today) for u in urls) + '</urlset>\n')
+          open(os.path.join(OUT, 'robots.txt'), 'w', encoding='utf-8').write('User-agent: *\nAllow: /\n\nSitemap: ' + BASE + 'sitemap.xml\n')
+          print('Đã tạo', len(T), 'trang công cụ, trang tổng hợp, sitemap.xml và robots.txt')
+          PY
+
+      - name: Lưu vào repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Không có thay đổi"
+          else
+            git commit -m "Cập nhật trang giới thiệu các công cụ"
+            git push
+          fi
+
+      - name: Yêu cầu GitHub Pages dựng lại web
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" || echo "Bỏ qua, Pages sẽ tự cập nhật"
