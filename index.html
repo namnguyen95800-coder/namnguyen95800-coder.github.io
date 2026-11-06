@@ -122,6 +122,7 @@ window.NA=(function(){
   function perm(){var l=LN();return l?l.checkPermissions().then(function(p){return p.display}).catch(function(){return 'unknown'}):Promise.resolve('none')}
   return {sync:sync,live:live,hold:hold,boot:boot,reset:reset,ask:ask,perm:perm,h:NAH,get on(){return !!LN()}};
 })();</script>
+<script>/* Điền email hoặc link biểu mẫu để nhận góp ý của người dùng. Để trống thì góp ý được gửi lên GitHub Issues. */window.BG_FEEDBACK={email:'',form:''};</script>
 <script>window.PX={lunar:1,age:1,hms:1,desk:1,wage:1,habit:1,sun:1,metro:1,music:1,track:1,meet:1};window.PXR={};
 window.FS=(function(){
   var fake=null;
@@ -711,14 +712,58 @@ window.SPEAK.on=speakOn;
 function spkSync(){var b=$('spkBtn');if(b)b.setAttribute('aria-pressed',speakOn()?'true':'false')}
 document.addEventListener('DOMContentLoaded',spkSync);
 /* ---- Mở nhanh công cụ từ phím tắt khi giữ biểu tượng app ---- */
-function deepGo(url){try{var m=/[?&]tool=([a-z]+)/.exec(url||'');if(m&&document.querySelector('#tabs [data-m="'+m[1]+'"]'))goTab(m[1])}catch(e){}}
+function deepGo(url){try{var m=/[?&#]tool=([a-z]+)/.exec(url||'');if(m&&document.querySelector('#tabs [data-m="'+m[1]+'"]'))goTab(m[1])}catch(e){}}
 window.addEventListener('load',function(){
+  setTimeout(function(){deepGo((location.search||'')+(location.hash||''))},500);
   setTimeout(function(){try{
     var C=window.Capacitor,A=C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.App;if(!A)return;
     if(A.getLaunchUrl)A.getLaunchUrl().then(function(r){if(r&&r.url)deepGo(r.url)}).catch(function(){});
     if(A.addListener)A.addListener('appUrlOpen',function(e){deepGo(e&&e.url)});
   }catch(e){}},1200);
 });
+/* ---- Góp ý và báo lỗi (tự kèm thông tin kỹ thuật) ---- */
+function fbInfo(cb){
+  var C=window.Capacitor,nat=C&&C.isNativePlatform&&C.isNativePlatform(),o={};
+  try{o={app:'web',tool:curM(),lang:document.documentElement.lang,screen:(window.screen?screen.width+'x'+screen.height:''),tz:(Intl.DateTimeFormat().resolvedOptions().timeZone||''),ua:navigator.userAgent,time:new Date().toISOString()}}catch(e){}
+  function fin(){try{if(window.MU&&MU.diag){var q=MU.diag();o.music=(q.nat?'android':'browser')+(q.err?' err='+q.err:'')+(q.perm?' notif='+q.perm:'')}}catch(e){}cb(o)}
+  if(nat&&C.Plugins&&C.Plugins.App&&C.Plugins.App.getInfo)C.Plugins.App.getInfo().then(function(i){o.app='apk '+i.version+' (build '+i.build+')';fin()}).catch(fin);else fin();
+}
+function fbText(kind,msg,o,withInfo){
+  var t=kind+'\n\n'+(msg||'(chưa viết gì)')+'\n';
+  if(withInfo){t+='\n--- Thông tin kỹ thuật ---\n';Object.keys(o).forEach(function(k){t+=k+': '+o[k]+'\n'})}
+  return t;
+}
+function showFeedback(){
+  var old=$('fb-dlg');if(old){old.remove();return}
+  fbInfo(function(o){
+    var cfg=window.BG_FEEDBACK||{},d=document.createElement('div');d.id='fb-dlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
+    d.style.cssText='position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:14px';
+    d.innerHTML='<div style="max-width:520px;width:100%;max-height:92vh;overflow:auto;background:var(--card,#1d2a3a);color:var(--ink,#fff);border-radius:16px;padding:16px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px">💬 '+T('Góp ý, báo lỗi','Feedback and bug report')+'</b><button type="button" id="fb-x" aria-label="Close" style="min-width:40px;min-height:40px">✕</button></div>'+
+      '<div class="mtr"><label style="flex:1">'+T('Loại','Type')+'<select id="fb-k"><option>'+T('Báo lỗi','Bug')+'</option><option>'+T('Góp ý tính năng','Feature idea')+'</option><option>'+T('Khác','Other')+'</option></select></label></div>'+
+      '<label style="display:block;margin:6px 0">'+T('Bạn gặp chuyện gì? Điều gì nên được cải thiện?','What happened? What should be improved?')+'<textarea id="fb-m" rows="5" style="width:100%;box-sizing:border-box;margin-top:4px" placeholder="'+T('Ví dụ: Bấm phát nhạc rồi xoá đa nhiệm thì nhạc dừng...','e.g. Music stops when I swipe the app away...')+'"></textarea></label>'+
+      '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="fb-i" checked> '+T('Kèm thông tin kỹ thuật (bản app, máy, lỗi gần nhất)','Include technical info (app version, device, last error)')+'</label>'+
+      '<details style="margin:4px 0"><summary style="cursor:pointer;font-size:13px;opacity:.8">'+T('Xem thông tin sẽ được gửi','See what will be sent')+'</summary><pre id="fb-pre" style="white-space:pre-wrap;font-size:12px;opacity:.85;margin:6px 0"></pre></details>'+
+      '<div class="nm" style="margin:6px 0">'+T('Không có tên, số điện thoại hay nội dung nhạc, thống kê của bạn trong thông tin kỹ thuật.','No name, phone number, music or stats are included in the technical info.')+'</div>'+
+      '<div class="mtr"><button type="button" id="fb-s">'+(cfg.email?'✉ '+T('Gửi qua email','Send by email'):cfg.form?'📝 '+T('Mở biểu mẫu','Open form'):'🐙 '+T('Gửi lên GitHub','Send on GitHub'))+'</button><button type="button" id="fb-c">📋 '+T('Sao chép','Copy')+'</button></div></div>';
+    document.body.appendChild(d);
+    function cur(){return fbText($('fb-k').value,$('fb-m').value,o,$('fb-i').checked)}
+    function pre(){$('fb-pre').textContent=fbText('',' ',o,true).split('--- Thông tin kỹ thuật ---')[1]||''}
+    pre();
+    d.addEventListener('click',function(e){
+      var id=e.target.id;
+      if(e.target===d||id==='fb-x'){d.remove();return}
+      if(id==='fb-c'){var t=cur();try{navigator.clipboard.writeText(t).then(function(){toast2(T('Đã sao chép.','Copied.'))},function(){toast2(T('Không sao chép được.','Could not copy.'))})}catch(x){toast2(T('Không sao chép được.','Could not copy.'))}}
+      else if(id==='fb-s'){
+        var txt=cur(),subj='[Bấm giờ] '+$('fb-k').value,app=document.documentElement.classList.contains('in-app'),url;
+        if(cfg.email)url='mailto:'+cfg.email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(txt);
+        else if(cfg.form){try{navigator.clipboard.writeText(txt)}catch(x){}toast2(T('Đã sao chép nội dung, hãy dán vào biểu mẫu.','Copied. Paste it into the form.'));url=cfg.form}
+        else url='https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/issues/new?title='+encodeURIComponent(subj)+'&body='+encodeURIComponent(txt.slice(0,6000));
+        if(app||/^mailto:/.test(url))location.href=url;else window.open(url,'_blank','noopener');
+      }
+    });
+  });
+}
 /* ---- Phím tắt trên máy tính ---- */
 function curM(){var b=document.querySelector('#tabs [aria-selected="true"]');return b?b.getAttribute('data-m'):''}
 function goTab(m){var b=document.querySelector('#tabs [data-m="'+m+'"]');if(b)b.click()}
@@ -777,12 +822,14 @@ document.addEventListener('keydown',function(e){
 document.addEventListener('click',function(e){
   var id=e.target&&e.target.id;
   if(id==='kb-open')showKeys();
+  else if(id==='fbBtn')showFeedback();
   else if(id==='spkBtn'){ls('speak',!speakOn());spkSync();if(speakOn()){window.SPEAK(T('Đã bật đọc giờ bằng giọng nói','Voice announcements are on'));var tp=tnPlug();if(tp&&tp.ttsInfo)setTimeout(function(){tp.ttsInfo().then(function(r){if(r&&r.ready&&!r.langOk)toast2(T('Máy chưa có giọng tiếng Việt. Vào Cài đặt, Ngôn ngữ, Chuyển văn bản thành giọng nói để tải thêm.','No Vietnamese voice installed. Open Settings, Languages, Text-to-speech to add one.'))}).catch(function(){})},2500)}else toast2(T('Đã tắt đọc giờ.','Voice announcements are off.'))}
   else if(id==='musBtn'){goTab('music');try{window.scrollTo({top:0,behavior:'smooth'})}catch(x){}}
 });
 try{var ll=document.documentElement.lang;new MutationObserver(function(){var l=document.documentElement.lang;if(l===ll)return;ll=l;var m=curM();if(window.PX[m]&&PXR[m])PXR[m]()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']})}catch(x){}
 })();
 </script>
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#eef3f4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d1a20" media="(prefers-color-scheme: dark)">
@@ -950,6 +997,8 @@ li .tag{font-size:13px;margin-left:6px;font-weight:500}
 .sum{color:var(--muted);font-size:14px;margin-top:6px}
 :root[data-theme="ocean"]{--bg:#0a1628;--surface:#11233d;--ink:#e6f0fb;--muted:#8aa4c2;--line:#1f3a5c;--go:#38bdf8;--go-ink:#04263a;--stop:#fb923c;--stop-ink:#2b1100}
 :root[data-theme="forest"]{--bg:#eef5ea;--surface:#fbfdf9;--ink:#1c2b1a;--muted:#5b6e57;--line:#d2e0cb;--go:#2f7d32;--go-ink:#ffffff;--stop:#b8431f;--stop-ink:#ffffff}
+:root[data-theme="sunset"]{--bg:#fff1e6;--surface:#fffaf5;--ink:#3d1f12;--muted:#8a6652;--line:#f1d9c6;--go:#e8590c;--go-ink:#ffffff;--stop:#7a2e1a;--stop-ink:#ffffff}
+:root[data-theme="gold"]{--bg:#14110a;--surface:#1d1910;--ink:#f6ecd0;--muted:#b7a77a;--line:#3a3220;--go:#e0b84a;--go-ink:#241a00;--stop:#8a3b2b;--stop-ink:#ffffff;color-scheme:dark}
 :root[data-theme="rose"]{--bg:#fbeff2;--surface:#fffafb;--ink:#3a1a24;--muted:#86606c;--line:#efd3db;--go:#c2185b;--go-ink:#ffffff;--stop:#5c3b8c;--stop-ink:#ffffff}
 html.big .time{font-size:clamp(72px,24vw,150px)}
 html.big .phase{font-size:20px}
@@ -1193,6 +1242,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 :root[data-theme="ocean"] .display{background:linear-gradient(145deg,#0a1f3a,#0f3157 70%,#12507a)}
 :root[data-theme="forest"] .hero{background:linear-gradient(120deg,#14301a 0%,#1d4a24 54%,#2a6b2f 100%)}
 :root[data-theme="forest"] .display{background:linear-gradient(145deg,#14301a,#1d4a24 70%,#2a6b2f)}
+:root[data-theme="sunset"] .hero{background:linear-gradient(120deg,#3b1209 0%,#7a2a10 54%,#d9480f 100%)}
+:root[data-theme="sunset"] .display{background:linear-gradient(145deg,#3b1209,#7a2a10 70%,#d9480f)}
+:root[data-theme="gold"] .hero{background:linear-gradient(120deg,#1a1405 0%,#33280a 54%,#5c4510 100%)}
+:root[data-theme="gold"] .display{background:linear-gradient(145deg,#1a1405,#33280a 70%,#5c4510)}
 :root[data-theme="rose"] .hero{background:linear-gradient(120deg,#3a1226 0%,#5a1b3c 54%,#86245a 100%)}
 :root[data-theme="rose"] .display{background:linear-gradient(145deg,#3a1226,#5a1b3c 70%,#86245a)}
 
@@ -1864,7 +1917,8 @@ html{overscroll-behavior-y:contain}
 .in-app body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .in-app input,.in-app textarea,.in-app select{-webkit-user-select:text;user-select:text}
 @media(max-width:620px){main{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important}}
-#st-cal{margin:12px 0 6px}.stchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stchips span{display:flex;flex-direction:column;gap:2px;padding:10px 10px;border-radius:12px;background:var(--line);font-size:12px;color:var(--muted)}.stchips b{font-size:16px;color:var(--ink)}.stchips small{font-size:11px}
+#st-cal{margin:12px 0 6px}.stshare{margin-top:10px}.stshare button{min-height:44px;padding:8px 16px}.plib{margin-top:8px}.plib summary{cursor:pointer;font-weight:600;font-size:14px;padding:6px 0}.pchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.upc{margin:16px 0 4px}.upc-t{font-weight:700;font-size:14px;margin-bottom:6px}.upc-r{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.upc-r button{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border-radius:14px;min-width:136px;text-align:left}.upc-r span{font-size:13px;opacity:.8}.stchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stchips span{display:flex;flex-direction:column;gap:2px;padding:10px 10px;border-radius:12px;background:var(--line);font-size:12px;color:var(--muted)}.stchips b{font-size:16px;color:var(--ink)}.stchips small{font-size:11px}
 .stmore{margin:10px 0 0;border:1px solid var(--line);border-radius:12px;padding:4px 12px}.stmore summary{cursor:pointer;font-weight:600;padding:8px 0;font-size:14px}.stacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-bottom:10px}.stacts .goalset{width:100%;margin:0}
 .stbadges{margin:12px 0 4px}.bdgs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.bdg{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;padding:8px 4px;border-radius:12px;background:var(--line);opacity:.55;font-size:11px}.bdg i{font-style:normal;font-size:20px;filter:grayscale(1)}.bdg em{font-style:normal;font-weight:700}.bdg.on{opacity:1;box-shadow:inset 0 0 0 2px var(--go)}.bdg.on i{filter:none}
 .cr{display:flex;gap:8px;align-items:baseline;padding:3px 0}.cr span{flex:1}.cr small{color:var(--muted)}.calt{font-weight:700;margin-bottom:4px}.calsum{font-size:13px;opacity:.8;margin:4px 0}.calinfo{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--line);font-size:14px;line-height:1.5}
@@ -1913,7 +1967,7 @@ html{overscroll-behavior-y:contain}
       <button type="button" class="goal-card" data-goal="timer" data-mode="cd"><span class="goal-icon">⏳</span><span><b>Đặt giờ bất kỳ</b><small>Đếm ngược và báo khi hết</small></span><span class="goal-arrow">↗</span></button>
     </div>
     <div class="goal-foot" id="goalFoot" role="status">Mẹo: mục tiêu bạn chọn gần nhất sẽ được ghi nhớ trên thiết bị này.</div>
-  </section>
+  <div id="upcoming" class="upc"></div></section>
 
   <div class="section-label"><span>CHỌN CÔNG CỤ</span><span class="section-line"></span><span class="section-count">25 chế độ</span></div>
 
@@ -1979,7 +2033,7 @@ html{overscroll-behavior-y:contain}
   <div class="foot sound-tools"><span class="sound-help">Nghe thử âm báo đang chọn</span><button type="button" id="testSound">▶ Thử âm báo</button></div>
   <div class="foot"><label>Âm nền <select id="amb" aria-label="Âm nền"><option value="off">Tắt</option><option value="rain">Tiếng mưa</option><option value="white">Ồn trắng</option><option value="brown">Ồn nâu</option><option value="ocean">Sóng biển</option><option value="wind">Gió</option><option value="fire">Lửa trại</option></select></label><button type="button" id="musBtn">🎧 Nhạc của tôi</button><button type="button" id="spkBtn" aria-pressed="false">🗣 Đọc giờ</button></div>
   <div class="foot notify-tools"><label class="chk"><input type="checkbox" id="notifyToggle"> Thông báo khi hết giờ</label><button type="button" id="notifyPermission">Bật thông báo</button></div><p class="notify-note" id="notifyStatus" role="status">Thông báo trình duyệt đang tắt.</p>
-  <div class="foot"><label>Giao diện <select id="thm" aria-label="Giao diện"><option value="auto">Tự động</option><option value="light">Sáng</option><option value="dark">Tối</option><option value="ocean">Biển</option><option value="forest">Rừng</option><option value="rose">Hồng</option><option value="mint">Mint Studio</option><option value="midnight">Midnight Luxe</option><option value="aurora">Aurora Pop</option><option value="glass">Glass Luxe</option></select></label><label class="chk"><input type="checkbox" id="big"> Chữ to</label><label class="chk"><input type="checkbox" id="hap"> Rung nhẹ</label></div>
+  <div class="foot"><label>Giao diện <select id="thm" aria-label="Giao diện"><option value="auto">Tự động</option><option value="light">Sáng</option><option value="dark">Tối</option><option value="ocean">Biển</option><option value="forest">Rừng</option><option value="rose">Hồng</option><option value="mint">Mint Studio</option><option value="midnight">Midnight Luxe</option><option value="aurora">Aurora Pop</option><option value="glass">Glass Luxe</option><option value="sunset" disabled>🔒 Hoàng hôn (chuỗi 7 ngày)</option><option value="gold" disabled>🔒 Vàng kim (chuỗi 30 ngày)</option></select></label><label class="chk"><input type="checkbox" id="big"> Chữ to</label><label class="chk"><input type="checkbox" id="hap"> Rung nhẹ</label></div>
   <section class="stats"><h2>Thống kê</h2><div id="st-goal"></div><div id="st-sum" class="sum"></div><div id="st-cal" class="stcal"></div><div id="st-badges" class="stbadges"></div><details class="stmore"><summary>Dòng thời gian trong ngày (Time Replay)</summary><div class="replay">
         <div class="rp-head"><b>Time Replay</b><span id="rp-date"></span></div>
         <div class="rp-nav">
@@ -2018,7 +2072,7 @@ html{overscroll-behavior-y:contain}
     <b>Ghi giờ:</b> ghi lại thời gian dành cho từng việc, tự vào Thống kê và Lịch.<br>
     <b>Họp chung:</b> chọn vài thành phố để tìm khung giờ họp hợp với mọi người.</p>
     <p><b>Mẹo:</b> bấm Lưu mẫu để dùng lại cài đặt, bấm Chia sẻ để gửi link cho bạn bè. Trên máy tính dùng phím Space (bắt đầu hoặc dừng), L (ghi vòng), R (đặt lại), F (chế độ tập trung), M (phát hoặc dừng nhạc), các phím số 1 đến 9 và 0 (chuyển nhanh công cụ), dấu ? (xem tất cả phím tắt). Trên điện thoại, bấm biểu tượng ở góc trên bên phải đồng hồ để vào chế độ tập trung. Cần để trang mở thì đồng hồ mới kêu đúng giờ, mở lại trang trong 24 giờ vẫn giữ đồng hồ đang chạy.</p>
-    <p><button type="button" id="kb-open">⌨ Xem phím tắt trên máy tính</button></p>
+    <p><button type="button" id="kb-open">⌨ Xem phím tắt trên máy tính</button> <button type="button" id="fbBtn">💬 Góp ý, báo lỗi</button> <a href="cong-cu">📚 Danh sách công cụ</a></p>
   </div></details>
   <details class="help donate" id="donate">
     <summary>☕ Ủng hộ người làm</summary>
@@ -2835,6 +2889,14 @@ html{overscroll-behavior-y:contain}
     if(!DAYS.some(function(e){return e.name===x[0]&&e.date===dt}))DAYS.push({name:x[0],date:dt});
     saveDays();drawDays();
   }
+  function drawUpc(){
+    var box=$('upcoming');if(!box)return;
+    var keys=['Tết Nguyên Đán','Tết Dương lịch','Giỗ Tổ Hùng Vương','Giải phóng miền Nam','Quốc tế Lao động','Tết Trung thu','Quốc khánh','Ngày Nhà giáo Việt Nam','Giáng sinh','Quốc tế Phụ nữ','Ông Công, Ông Táo','Ngày Phụ nữ Việt Nam'],list=[],n0=new Date(),t0=new Date(n0.getFullYear(),n0.getMonth(),n0.getDate()).getTime();
+    HOL.forEach(function(g,gi){g[2].forEach(function(x,i){if(keys.indexOf(x[0])>=0){var dt=holDate(g[1],x[1],x[2]);if(dt)list.push({n:x[0],v:gi+':'+i,d:Math.round((tgt(dt)-t0)/864e5)})}})});
+    list.sort(function(a,b){return a.d-b.d});list=list.slice(0,4);
+    var en=EN();
+    box.innerHTML=list.length?'<div class="upc-t">🗓 '+(en?'Coming up':'Sắp tới')+'</div><div class="upc-r">'+list.map(function(x){return '<button type="button" data-v="'+x.v+'"><b>'+esc(x.n)+'</b><span>'+(x.d===0?(en?'Today!':'Hôm nay!'):x.d+(en?' days':' ngày'))+'</span></button>'}).join('')+'</div>':'';
+  }
   function days(){
     cancelAnimationFrame(raf);
     panel.innerHTML='<div class="addrow2"><input id="dn" placeholder="Tên sự kiện" maxlength="30"><input id="dd" type="date" aria-label="Ngày"><button data-a="add">Thêm</button></div><select id="dh" class="hsel" aria-label="Ngày lễ có sẵn">'+holOpts()+'</select><div id="dl"></div>';
@@ -2920,20 +2982,29 @@ html{overscroll-behavior-y:contain}
   /* Mẫu cài sẵn */
   var PM={cd:1,pomo:1,iv:1,chess:1,exam:1},preBox=$('presets');
   var BUILT={
-    iv:[{name:'Tabata 20/10',v:{s1:'20',s2:'10',s3:'8'}},{name:'Plank 30/15',v:{s1:'30',s2:'15',s3:'5'}}],
-    pomo:[{name:'Pomodoro 25/5',v:{s1:'25',s2:'0',s3:'5',s4:'0',s5:'15',s6:'0'}},{name:'Học 50/10',v:{s1:'50',s2:'0',s3:'10',s4:'0',s5:'20',s6:'0'}}],
-    chess:[{name:'Blitz 3+2',v:{s1:'3',s3:'0',s2:'2'}},{name:'Rapid 10+0',v:{s1:'10',s3:'0',s2:'0'}}],
-    cd:[],
-    exam:[{name:'Thi 90 phút',v:{s1:'90',s2:'0',s3:'30',s4:'15',s5:'5',s6:'1'}},{name:'Thi 45 phút',v:{s1:'45',s2:'0',s3:'15',s4:'5',s5:'1',s6:'0'}}]
+    iv:[{name:'Tabata 20/10',v:{s1:'20',s2:'10',s3:'8'}},{name:'Plank 30/15',v:{s1:'30',s2:'15',s3:'5'}},
+        {name:'HIIT 40/20 x10',v:{s1:'40',s2:'20',s3:'10'}},{name:'Plank 45/15 x4',v:{s1:'45',s2:'15',s3:'4'}},{name:'Nhảy dây 60/30 x6',v:{s1:'60',s2:'30',s3:'6'}},
+        {name:'Squat 45/15 x6',v:{s1:'45',s2:'15',s3:'6'}},{name:'Core 30/30 x8',v:{s1:'30',s2:'30',s3:'8'}},{name:'Kéo giãn 30/10 x10',v:{s1:'30',s2:'10',s3:'10'}},{name:'Đi bộ nhanh 3/1 phút x5',v:{s1:'180',s2:'60',s3:'5'}}],
+    pomo:[{name:'Pomodoro 25/5',v:{s1:'25',s2:'0',s3:'5',s4:'0',s5:'15',s6:'0'}},{name:'Học 50/10',v:{s1:'50',s2:'0',s3:'10',s4:'0',s5:'20',s6:'0'}},
+        {name:'Học nhanh 15/3',v:{s1:'15',s2:'0',s3:'3',s4:'0',s5:'10',s6:'0'}},{name:'Đọc sách 30/5',v:{s1:'30',s2:'0',s3:'5',s4:'0',s5:'15',s6:'0'}},
+        {name:'Viết lách 45/10',v:{s1:'45',s2:'0',s3:'10',s4:'0',s5:'20',s6:'0'}},{name:'Tập trung sâu 90/20',v:{s1:'90',s2:'0',s3:'20',s4:'0',s5:'30',s6:'0'}},{name:'Ngoại ngữ 20/5',v:{s1:'20',s2:'0',s3:'5',s4:'0',s5:'15',s6:'0'}}],
+    chess:[{name:'Blitz 3+2',v:{s1:'3',s3:'0',s2:'2'}},{name:'Rapid 10+0',v:{s1:'10',s3:'0',s2:'0'}},
+        {name:'Bullet 1+0',v:{s1:'1',s3:'0',s2:'0'}},{name:'Blitz 5+3',v:{s1:'5',s3:'0',s2:'3'}},{name:'Rapid 15+10',v:{s1:'15',s3:'0',s2:'10'}},{name:'Cổ điển 30+0',v:{s1:'30',s3:'0',s2:'0'}}],
+    cd:[{name:'Trà 3 phút',v:{s1:'3',s2:'0'}},{name:'Trứng lòng đào 6:30',v:{s1:'6',s2:'30'}},{name:'Trứng chín 10 phút',v:{s1:'10',s2:'0'}},{name:'Mì ăn liền 3 phút',v:{s1:'3',s2:'0'}},
+        {name:'Đánh răng 2 phút',v:{s1:'2',s2:'0'}},{name:'Nghỉ mắt 20 giây',v:{s1:'0',s2:'20'}},{name:'Đắp mặt nạ 15 phút',v:{s1:'15',s2:'0'}},{name:'Ngủ trưa 20 phút',v:{s1:'20',s2:'0'}},{name:'Thiền 10 phút',v:{s1:'10',s2:'0'}},{name:'Giải lao 5 phút',v:{s1:'5',s2:'0'}}],
+    exam:[{name:'Thi 90 phút',v:{s1:'90',s2:'0',s3:'30',s4:'15',s5:'5',s6:'1'}},{name:'Thi 45 phút',v:{s1:'45',s2:'0',s3:'15',s4:'5',s5:'1',s6:'0'}},
+        {name:'Thi 120 phút',v:{s1:'120',s2:'0',s3:'60',s4:'30',s5:'15',s6:'5'}},{name:'Thi 60 phút',v:{s1:'60',s2:'0',s3:'30',s4:'15',s5:'5',s6:'1'}},{name:'Kiểm tra 15 phút',v:{s1:'15',s2:'0',s3:'10',s4:'5',s5:'2',s6:'1'}},
+        {name:'IELTS Reading 60',v:{s1:'60',s2:'0',s3:'40',s4:'20',s5:'10',s6:'5'}},{name:'IELTS Writing 60',v:{s1:'60',s2:'0',s3:'40',s4:'20',s5:'10',s6:'5'}},{name:'TOEIC 120',v:{s1:'120',s2:'0',s3:'75',s4:'45',s5:'15',s6:'5'}}]
   };
   function getP(m){try{var a=JSON.parse(ls('bg2-presets-'+m)||'[]');return Array.isArray(a)?a:[]}catch(x){return []}}
   function drawPre(){
     if(!PM[cur]){preBox.hidden=true;preBox.innerHTML='';return}
     preBox.hidden=false;
     var u=getP(cur),b=BUILT[cur]||[],h='<div class="pre"><input id="pn" placeholder="Tên mẫu mới" maxlength="20"><button data-a="save">Lưu mẫu</button><button data-a="share">Chia sẻ</button></div><div class="pchips">';
-    b.forEach(function(x,i){h+='<span class="pchip"><button data-a="lb" data-i="'+i+'">'+esc(x.name)+'</button></span>'});
     u.forEach(function(x,i){h+='<span class="pchip"><button data-a="lu" data-i="'+i+'">'+esc(x.name)+'</button><button data-a="du" data-i="'+i+'" aria-label="Xóa mẫu">×</button></span>'});
-    preBox.innerHTML=h+'</div>';
+    h+='</div>';
+    if(b.length){h+='<details class="plib"'+(u.length?'':' open')+'><summary>📚 '+(EN()?'Template library':'Thư viện mẫu')+' ('+b.length+')</summary><div class="pchips">';b.forEach(function(x,i){h+='<span class="pchip"><button data-a="lb" data-i="'+i+'">'+esc(x.name)+'</button></span>'});h+='</div></details>'}
+    preBox.innerHTML=h;
   }
   function applyP(v){
     Object.keys(v).forEach(function(id){
@@ -2990,7 +3061,14 @@ html{overscroll-behavior-y:contain}
   var SBUILT=[
     {name:'Buổi sáng',st:[['Đánh răng',120],['Tập thể dục',300],['Ăn sáng',900]]},
     {name:'Học 3 bước',st:[['Ôn bài cũ',600],['Học bài mới',1500],['Làm bài tập',900]]},
-    {name:'Tập cơ bản',st:[['Khởi động',180],['Tập chính',900],['Giãn cơ',300]]}
+    {name:'Tập cơ bản',st:[['Khởi động',180],['Tập chính',900],['Giãn cơ',300]]},
+    {name:'Thiền sáng 10 phút',st:[['Thở sâu',120],['Quét cơ thể',300],['Biết ơn',180]]},
+    {name:'Ôn thi 90 phút',st:[['Ôn lý thuyết',1800],['Làm đề',2400],['Chữa lỗi',900],['Tổng kết',300]]},
+    {name:'Nấu mì ăn liền',st:[['Đun nước',180],['Cho mì vào',180],['Ủ mì',60]]},
+    {name:'Dọn nhà nhanh 15 phút',st:[['Gom đồ',300],['Quét và lau',480],['Đổ rác',120]]},
+    {name:'Giãn cơ văn phòng',st:[['Cổ và vai',60],['Lưng',60],['Cổ tay',60],['Chân',60]]},
+    {name:'Rửa mặt và skincare',st:[['Rửa mặt',90],['Toner',60],['Dưỡng ẩm',60]]},
+    {name:'Thuyết trình 10 phút',st:[['Mở bài',60],['Nội dung',420],['Kết luận',60],['Hỏi đáp',60]]}
   ];
   function stTpl(){try{var a=JSON.parse(ls('bg2-seq-tpl')||'[]');return Array.isArray(a)?a:[]}catch(x){return []}}
   function mm(ms){var t=Math.round(ms/1000);return Math.floor(t/60)+':'+pad(t%60)}
@@ -3001,9 +3079,10 @@ html{overscroll-behavior-y:contain}
       return '<div class="srow"><span class="sn">'+(i+1)+'. '+esc(x.n)+'</span><span class="st">'+mm(x.ms)+'</span><button data-a="up" data-i="'+i+'" aria-label="Lên">↑</button><button data-a="dn" data-i="'+i+'" aria-label="Xuống">↓</button><button data-a="rm" data-i="'+i+'" aria-label="Xóa bước">×</button></div>';
     }).join(''):'<p class="hint" style="margin-top:0">Chưa có bước nào. Thêm bước bên dưới hoặc chọn một mẫu.</p>';
     var h='';
-    SBUILT.forEach(function(x,i){h+='<span class="pchip"><button data-a="lb" data-i="'+i+'">'+esc(x.name)+'</button></span>'});
     stTpl().forEach(function(x,i){h+='<span class="pchip"><button data-a="lu" data-i="'+i+'">'+esc(x.name)+'</button><button data-a="du" data-i="'+i+'" aria-label="Xóa mẫu">×</button></span>'});
-    qc.innerHTML=h;
+    h+='<details class="plib"'+(stTpl().length?'':' open')+'><summary>📚 '+(EN()?'Template library':'Thư viện mẫu')+' ('+SBUILT.length+')</summary><div class="pchips">';
+    SBUILT.forEach(function(x,i){h+='<span class="pchip"><button data-a="lb" data-i="'+i+'">'+esc(x.name)+'</button></span>'});
+    qc.innerHTML=h+'</div></details>';
   }
   function seqUI(){
     var box=$('seqbox');if(!box)return;
@@ -3120,11 +3199,10 @@ html{overscroll-behavior-y:contain}
     drawCal();
     drawBadges(d,sk);
   }
-  function drawBadges(d,sk){
-    var box=$('st-badges');if(!box)return;
+  function badgeList(d,sk){
     var tot=0,ses=0,goal=goalMin(),hits=0;
     Object.keys(d).forEach(function(k){var o=d[k],m=dayMs(o);if(m/60000>=goal)hits++;for(var x in o){tot+=o[x][0];ses+=o[x][1]}});
-    var B=[
+    return [
       ['🌱',ctr('Khởi đầu','First step'),ses>=1,Math.min(ses,1)+'/1'],
       ['🔥',ctr('3 ngày liên tiếp','3-day streak'),sk.best>=3,Math.min(sk.best,3)+'/3'],
       ['🏅',ctr('7 ngày liên tiếp','7-day streak'),sk.best>=7,Math.min(sk.best,7)+'/7'],
@@ -3134,8 +3212,49 @@ html{overscroll-behavior-y:contain}
       ['🍅',ctr('50 phiên','50 sessions'),ses>=50,Math.min(ses,50)+'/50'],
       ['⭐',ctr('10 ngày đạt mục tiêu','10 goal days'),hits>=10,Math.min(hits,10)+'/10']
     ];
-    var got=B.filter(function(b){return b[2]}).length;
-    box.innerHTML='<div class="calt">🏆 '+ctr('Huy hiệu','Badges')+' · '+got+'/'+B.length+'</div><div class="bdgs">'+B.map(function(b){return '<span class="bdg'+(b[2]?' on':'')+'" title="'+b[1]+'"><i>'+b[0]+'</i><small>'+b[1]+'</small><em>'+(b[2]?'✓':b[3])+'</em></span>'}).join('')+'</div>';
+  }
+  function unlockThemes(best){
+    var T2=[['sunset','🌇 Hoàng hôn','Sunset',7],['gold','✨ Vàng kim','Gold',30]],thm=$('thm');if(!thm)return;
+    T2.forEach(function(t){
+      var o=thm.querySelector('option[value="'+t[0]+'"]');if(!o)return;
+      var ok=best>=t[3];o.disabled=!ok;
+      o.textContent=ok?(EN()?t[2]:t[1].replace(/^\S+ /,''))+(ok?' ★':''):'🔒 '+(EN()?t[2]:t[1].replace(/^\S+ /,''))+(EN()?' (streak '+t[3]+' days)':' (chuỗi '+t[3]+' ngày)');
+    });
+  }
+  function drawBadges(d,sk){
+    var box=$('st-badges');if(!box)return;
+    var B=badgeList(d,sk),got=B.filter(function(b){return b[2]}).length;
+    unlockThemes(sk.best);
+    box.innerHTML='<div class="calt">🏆 '+ctr('Huy hiệu','Badges')+' · '+got+'/'+B.length+'</div><div class="bdgs">'+B.map(function(b){return '<span class="bdg'+(b[2]?' on':'')+'" title="'+b[1]+'"><i>'+b[0]+'</i><small>'+b[1]+'</small><em>'+(b[2]?'✓':b[3])+'</em></span>'}).join('')+'</div>'+
+      '<div class="stshare"><button type="button" id="st-share">📸 '+ctr('Chia sẻ thành tích','Share my progress')+'</button></div>';
+    var sb=$('st-share');if(sb&&!sb._b){sb._b=1;sb.addEventListener('click',shareCard)}
+  }
+  function shareCard(){
+    try{
+      var d=load(),goal=goalMin(),sk=streaks(d),i,wk=0,tm=Math.round(dayMs(d[dk(new Date())]||{})/60000);
+      for(i=6;i>=0;i--){var dt=new Date();dt.setDate(dt.getDate()-i);wk+=dayMs(d[dk(dt)]||{})/60000}
+      var B=badgeList(d,sk),got=B.filter(function(b){return b[2]}).length;
+      var W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+      var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a1b2b');g.addColorStop(.55,'#0f4a45');g.addColorStop(1,'#2f7d6b');x.fillStyle=g;x.fillRect(0,0,W,H);
+      x.globalAlpha=.12;x.fillStyle='#fff';x.beginPath();x.arc(W-60,140,300,0,7);x.fill();x.beginPath();x.arc(80,H-120,360,0,7);x.fill();x.globalAlpha=1;
+      var F='system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';x.textAlign='center';x.fillStyle='#fff';
+      x.font='700 56px '+F;x.fillText('⏱ Bấm giờ',W/2,150);
+      x.font='800 340px '+F;x.fillText(String(sk.cur),W/2,610);
+      x.font='600 66px '+F;x.fillText(ctr('ngày liên tiếp','day streak')+' 🔥',W/2,710);
+      var items=[[tm+' '+ctr('phút','min'),ctr('hôm nay','today')],[Math.round(wk/60*10)/10+' '+ctr('giờ','h'),ctr('7 ngày qua','last 7 days')],[got+'/'+B.length,ctr('huy hiệu','badges')]];
+      items.forEach(function(it,k){
+        var cx=180+k*360;x.fillStyle='rgba(255,255,255,.14)';x.beginPath();if(x.roundRect)x.roundRect(cx-165,800,330,230,32);else x.rect(cx-165,800,330,230);x.fill();
+        x.fillStyle='#fff';x.font='800 70px '+F;x.fillText(it[0],cx,905);x.font='500 36px '+F;x.globalAlpha=.8;x.fillText(it[1],cx,968);x.globalAlpha=1;
+      });
+      x.font='500 40px '+F;x.globalAlpha=.9;x.fillText(ctr('Dài nhất: ','Best: ')+sk.best+' '+ctr('ngày','days')+'  ·  '+ctr('Mục tiêu: ','Goal: ')+goal+' '+ctr('phút/ngày','min/day'),W/2,1120);
+      x.globalAlpha=.75;x.font='500 38px '+F;x.fillText('namnguyen95800-coder.github.io',W/2,1250);x.globalAlpha=1;
+      c.toBlob(function(blob){
+        if(!blob)return;var name='thanh-tich-bam-gio.png',C=window.Capacitor;
+        if(window.SAVE&&C&&C.isNativePlatform&&C.isNativePlatform()){window.SAVE(name,blob,'image/png');return}
+        try{var f=new File([blob],name,{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Bấm giờ'}).catch(function(){});return}}catch(e){}
+        var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1500);
+      },'image/png');
+    }catch(e){}
   }
   /* Lịch tháng gắn với thống kê và chuỗi ngày */
   var calM=new Date();calM=new Date(calM.getFullYear(),calM.getMonth(),1);var calSel=dk(new Date()),calInit=false;
@@ -3225,6 +3344,13 @@ html{overscroll-behavior-y:contain}
     }catch(e){toast('Không xuất được CSV.');}
   });
   drawStats();
+  drawUpc();setInterval(drawUpc,600000);
+  var upb=$('upcoming');
+  if(upb)upb.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    addHol(b.getAttribute('data-v'));
+    var t=document.querySelector('#tabs [data-m="days"]');if(t)t.click();
+  });
   /* Time Replay */
   var RP_COLORS={pomo:'#4f8cff',iv:'#2ec99d',cd:'#ffb84d',seq:'#a78bfa',exam:'#ff7a5f',cook:'#f472b6',chess:'#94a3b8'};
   var rpOffset=0,rpView='day';
@@ -3829,6 +3955,9 @@ html{overscroll-behavior-y:contain}
     "Tập luyện": "Workout",
     "Nấu ăn": "Cooking",
     "Chia sẻ": "Share",
+    "📚 Danh sách công cụ": "📚 All tools",
+    "💬 Góp ý, báo lỗi": "💬 Feedback and bug report",
+    "Thư viện mẫu": "Template library",
     "25 chế độ": "25 modes",
     "Ghi giờ công việc": "Work time tracker",
     "Biết mình dành bao lâu cho từng việc": "See how long each task takes",

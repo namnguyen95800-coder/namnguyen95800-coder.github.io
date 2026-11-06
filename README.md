@@ -1,150 +1,107 @@
 <div align="center">
 
-# ⏱️ Bấm Giờ (Dousob)
+# 🕒 Bấm giờ
 
-**Giải pháp quản lý thời gian toàn diện, nhẹ nhàng và tôn trọng quyền riêng tư.**
+**Tập trung, đếm ngược và quản lý thời gian, miễn phí, không cần tài khoản.**
 
-[![Trạng thái](https://img.shields.io/badge/Trạng%20thái-Ổn%20định-success?style=for-the-badge)](https://namnguyen95800-coder.github.io/)
-[![Offline](https://img.shields.io/badge/Hỗ%20trợ%20Offline-Có-2DBE9D?style=for-the-badge)](https://namnguyen95800-coder.github.io/)
-[![Quảng cáo](https://img.shields.io/badge/Không%20Quảng%20cáo-100%25%20Miễn%20phí-blue?style=for-the-badge)](https://namnguyen95800-coder.github.io/)
-[![License](https://img.shields.io/badge/Giấy%20phép-MIT-yellow?style=for-the-badge)](LICENSE)
+Nhiều loại đồng hồ trong một nơi: dùng ngay trên trình duyệt hoặc cài thành app Android.
 
 <br>
 
-[![🌐 Mở Website](https://img.shields.io/badge/🌐_Mở_Website-2DBE9D?style=for-the-badge&logo=googlechrome&logoColor=white)](https://namnguyen95800-coder.github.io/)
-[![📲 Tải APK](https://img.shields.io/badge/📲_Tải_App_Android_(APK)-1f2a44?style=for-the-badge&logo=android&logoColor=white)](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk)
+[![Mở website](https://img.shields.io/badge/🌐_Mở_website-2DBE9D?style=for-the-badge)](https://namnguyen95800-coder.github.io/)
+[![Tải app Android](https://img.shields.io/badge/📲_Tải_app_Android_(APK)-1f2a44?style=for-the-badge)](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk)
 
 </div>
 
 ---
 
-## 📖 Giới thiệu
+## 👋 Giới thiệu
 
-**Bấm Giờ** là một dự án mã nguồn mở, được thiết kế để gom tất cả các công cụ quản lý thời gian bạn cần vào một giao diện duy nhất. Với triết lý **"Offline-first"** và **"Privacy-first"**, ứng dụng hoạt động mượt mà ngay trên trình duyệt mà không yêu cầu đăng ký tài khoản, không thu thập dữ liệu và không có quảng cáo.
+**Bấm giờ** là dự án cá nhân gom các công cụ thời gian thường dùng vào một trang web gọn nhẹ. Bạn mở lên là dùng được ngay, không quảng cáo, không đăng ký, và vẫn chạy khi mất mạng.
 
----
+## ✨ Có gì trong app
 
-## 📸 Ảnh chụp màn hình
+| Công cụ | Dùng để |
+| --- | --- |
+| ⏱ **Bấm giờ** | Đếm lên, ghi vòng |
+| ⏳ **Đếm ngược** | Đặt thời gian và báo khi hết giờ |
+| 🍅 **Pomodoro** | Học và làm việc theo phiên, có giờ nghỉ |
+| 💪 **Tập luyện** | Chia thời gian tập và nghỉ |
+| 🔗 **Chuỗi bước** | Nối nhiều bước thành một quy trình |
+| 📝 **Đồng hồ thi** | Tổng thời gian và các mốc báo |
+| 📅 **Đếm ngày** | Đếm ngược đến ngày quan trọng, Tết, ngày lễ |
+| ♟️ **Cờ vua** | Đồng hồ cho hai người chơi |
+| 🍳 **Nấu ăn** | Canh nhiều món cùng lúc |
+| 🌿 **Hít thở** | Thực hành nhịp thở chậm |
+| 🔔 **Nhắc nhở** | Nhắc lặp lại theo chu kỳ |
+| 🌍 **Giờ thế giới** | Xem giờ nhiều thành phố |
+| 😴 **Tính giờ ngủ** | Gợi ý giờ đi ngủ hoặc thức dậy |
+| 📆 **Tính ngày** | Số ngày giữa hai ngày, cộng trừ ngày |
+| 🌙 **Âm lịch** | Đổi dương lịch và âm lịch, xem Tết và can chi |
+| 🎂 **Tính tuổi** | Tuổi chính xác, số ngày đến sinh nhật |
+| ➕ **Cộng trừ giờ** | Khoảng giờ giữa hai mốc, cộng trừ giờ phút |
+| 🖥️ **Đồng hồ để bàn** | Số lớn, toàn màn hình, giữ sáng màn hình |
+| 💵 **Tính lương giờ** | Ước tính lương và tiền tăng ca |
+| 🔥 **Chuỗi thói quen** | Đánh dấu mỗi ngày, đếm ngày liên tiếp |
+| 🌅 **Mặt trời mọc lặn** | Giờ mặt trời mọc, lặn, giờ vàng chụp ảnh |
+| 🎵 **Máy gõ nhịp** | Chỉnh BPM, phách mạnh nhẹ, chia nhịp, 4 âm sắc, tăng tốc dần |
+| 🎧 **Nhạc của tôi** | Nghe nhạc có sẵn trong máy, chạy nền, nối với Pomodoro |
+| 📋 **Ghi giờ công việc** | Ghi thời gian từng việc, tự vào thống kê và lịch |
+| 🤝 **Họp chung** | Tìm khung giờ họp hợp với nhiều múi giờ |
 
-> *[!TIP]*
-> Hãy thay thế các liên kết ảnh dưới đây bằng ảnh chụp thực tế từ ứng dụng của bạn để tăng tính thuyết phục.
+Ngoài ra còn có: lịch tháng gắn với thống kê và chuỗi ngày, đọc giờ bằng giọng nói, phím tắt trên máy tính (nhấn ?), nhiều giao diện, âm báo và âm nền, lưu mẫu cài đặt, thống kê theo ngày và tuần, xuất CSV, chế độ tập trung toàn màn hình, tiếng Việt và tiếng Anh.
 
-<div align="center">
-  <img src="https://via.placeholder.com/300x600/2DBE9D/FFFFFF?text=Giao+diện+Chính" width="200" alt="Giao diện chính" />
-  <img src="https://via.placeholder.com/300x600/1f2a44/FFFFFF?text=Chế+độ+Pomodoro" width="200" alt="Chế độ Pomodoro" />
-  <img src="https://via.placeholder.com/300x600/FF5722/FFFFFF?text=Đồng+hồ+Cờ+vua" width="200" alt="Đồng hồ Cờ vua" />
-</div>
+## 🚀 Cách dùng
 
----
+### 🌐 Trên trình duyệt
+Mở **https://namnguyen95800-coder.github.io/** trên điện thoại hoặc máy tính. Có thể chọn "Cài về màn hình" để thêm vào màn hình chính như một app.
 
-## ✨ Tính năng nổi bật
+### 📲 Cài app Android (APK)
+1. Tải file **[Dousob.apk](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk)** (hoặc vào trang [Releases](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/tag/latest)).
+2. Mở file vừa tải. Nếu máy hỏi, cho phép trình duyệt cài ứng dụng từ nguồn không xác định.
+3. Mở app và cho phép **thông báo** để nhận chuông khi hết giờ.
 
-Ứng dụng cung cấp hơn 20 công cụ, được phân loại khoa học để dễ dàng tìm kiếm:
+> App Android dùng báo thức và thông báo của hệ thống để báo khi hết giờ, đồng thời hiện đồng hồ đang chạy trên thanh thông báo. Nếu chuông không kêu đúng giờ, hãy đặt pin của app ở mức **Không hạn chế** trong cài đặt máy.
 
-### ⏱️ Đo lường thời gian
-- **Bấm giờ & Đếm ngược:** Cơ bản, chính xác, hỗ trợ ghi vòng (lap).
-- **Đồng hồ thi & Cờ vua:** Quản lý thời gian chuyên biệt cho các kỳ thi và trò chơi đối kháng.
-- **Nấu ăn:** Hẹn giờ độc lập cho nhiều món cùng lúc.
+## ✨ Điểm mới
 
-### 🎯 Năng suất & Thói quen
-- **Pomodoro:** Chu kỳ làm việc và nghỉ ngơi khoa học.
-- **Chuỗi thói quen (Habit Tracker):** Đánh dấu và duy trì chuỗi ngày liên tiếp.
-- **Chuỗi bước (Workflow):** Tùy chỉnh quy trình nhiều bước có tính giờ cho từng bước.
+- **Thống kê gọn hơn:** lịch tháng gắn với chuỗi ngày, 8 huy hiệu, thẻ ảnh chia sẻ thành tích.
+- **Thư viện mẫu** cho Đếm ngược, Pomodoro, Tập luyện, Quy trình, Đồng hồ thi và Cờ vua.
+- **Dải Sắp tới** cho Tết, Trung thu, Giỗ Tổ và các ngày lễ Việt Nam.
+- **Giao diện mở khoá** theo chuỗi ngày: Hoàng hôn (7 ngày), Vàng kim (30 ngày).
+- **Góp ý, báo lỗi** tự kèm thông tin kỹ thuật, và trang giới thiệu riêng cho từng công cụ.
 
-### 🧘 Sức khỏe & Đời sống
-- **Hít thở:** Hướng dẫn nhịp thở chậm để thư giãn.
-- **Tính giờ ngủ:** Tính toán chu kỳ ngủ để gợi ý giờ đi ngủ/thức dậy tối ưu.
-- **Mặt trời mọc/lặn:** Tra cứu giờ vàng để chụp ảnh hoặc hoạt động ngoài trời.
+## 🔄 Cập nhật
 
-### 📅 Lịch & Ngày tháng
-- **Đếm ngày & Tính ngày:** Tính khoảng cách giữa hai mốc thời gian, cộng/trừ ngày.
-- **Âm lịch:** Chuyển đổi Dương - Âm lịch, xem ngày Tết, Can - Chi.
-- **Tính tuổi:** Tính tuổi chính xác đến ngày và đếm ngược sinh nhật.
+Nội dung app lấy trực tiếp từ website, nên mỗi khi trang web được cập nhật thì app tự có bản mới, không cần cài lại.
 
-### 🛠️ Tiện ích mở rộng
-- **Đồng hồ để bàn:** Giao diện số lớn, toàn màn hình, chống khóa màn hình.
-- **Giờ thế giới:** Theo dõi múi giờ của nhiều thành phố cùng lúc.
-- **Tính lương giờ:** Ước tính thu nhập dựa trên thời gian làm việc và tăng ca.
-- **Máy gõ nhịp (Metronome):** Chỉnh BPM, phách, âm sắc, hỗ trợ tăng tốc dần.
-- **Trình phát nhạc:** Nghe nhạc nền từ thiết bị, tích hợp chạy nền cùng Pomodoro.
-
-> *[!NOTE]*
-> **Tiện ích bổ sung:** Hỗ trợ phím tắt (nhấn `?` để xem), đọc giờ bằng giọng nói, xuất dữ liệu CSV, thống kê chi tiết và giao diện song ngữ (Tiếng Việt / Tiếng Anh).
-
----
-
-## 🚀 Hướng dẫn sử dụng
-
-### 🌐 1. Trên trình duyệt (Khuyến nghị)
-Truy cập **[namnguyen95800-coder.github.io](https://namnguyen95800-coder.github.io/)** trên bất kỳ thiết bị nào.
-> *[!TIP]*
-> **Cài đặt làm ứng dụng (PWA):** Trên trình duyệt điện thoại hoặc Chrome PC, hãy chọn menu `⋮` -> **"Cài đặt ứng dụng"** hoặc **"Thêm vào màn hình chính"** để trải nghiệm như một app native.
-
-### 📲 2. Cài đặt ứng dụng Android (APK)
-1. Tải file [`Dousob.apk`](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk) từ trang [Releases](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/tag/latest).
-2. Mở file và cấp quyền **"Cài đặt từ nguồn không xác định"** nếu được hỏi.
-3. Cấp quyền **Thông báo** để nhận chuông báo khi hết giờ.
-
-> *[!WARNING]*
-> **Lưu ý về Pin trên Android:** Một số điện thoại (Xiaomi, Samsung, Oppo...) có thể tắt ứng dụng chạy nền để tiết kiệm pin. Hãy vào Cài đặt -> Ứng dụng -> Bấm Giờ -> Pin và chọn chế độ **"Không hạn chế"** để đảm bảo chuông báo hoạt động chính xác.
-
----
-
-## 🔄 Cơ chế cập nhật
-
-Ứng dụng Android được xây dựng dưới dạng **WebView wrapper**. Điều này có nghĩa là toàn bộ logic và giao diện được tải trực tiếp từ website. Khi website được cập nhật, ứng dụng trên điện thoại của bạn sẽ **tự động có phiên bản mới nhất** mà không cần tải lại APK.
-
----
-
-## 🛠️ Công nghệ sử dụng
+## 🛠️ Công nghệ
 
 | Công nghệ | Vai trò |
-| :--- | :--- |
-| ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) ![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) | Xây dựng giao diện và toàn bộ logic ứng dụng |
-| ![Service Worker](https://img.shields.io/badge/Service_Worker-Offline-8A2BE2?style=flat) | Lưu trữ cache, cho phép hoạt động không cần internet |
-| ![Capacitor](https://img.shields.io/badge/Capacitor-119EFF?style=flat&logo=capacitor&logoColor=white) | Đóng gói ứng dụng web thành APK Android native |
-| ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white) | Tự động hóa quy trình build và phát hành APK |
+| --- | --- |
+| HTML, CSS, JavaScript | Giao diện và toàn bộ chức năng |
+| Service Worker | Dùng được khi không có mạng |
+| GitHub Pages | Đưa website lên mạng |
+| Capacitor | Đóng gói thành app Android |
+| GitHub Actions | Tự động build file APK |
 
----
-
-## 📁 Cấu trúc dự án
+## 📁 Cấu trúc
 
 ```text
-├── index.html                # Điểm entry, chứa toàn bộ cấu trúc và logic UI
-├── sw.js                     # Service Worker xử lý cache và chế độ offline
-├── manifest.json             # Cấu hình PWA (tên, icon, màu sắc)
-├── icon-192.png              # Icon ứng dụng (kích thước nhỏ)
-├── icon-512.png              # Icon ứng dụng (kích thước lớn)
-└── .github/
-    └── workflows/
-        └── build-apk.yml     # Script tự động build APK bằng GitHub Actions
+index.html                    Toàn bộ website
+sw.js, manifest.json          Chạy offline và cài về màn hình
+icon-192.png, icon-512.png    Icon ứng dụng
+.github/workflows/build-apk.yml   Quy trình build APK
 ```
 
----
+## 🔨 Build lại APK
 
-## 🔨 Hướng dẫn Build APK (Dành cho Developer)
-
-1. Fork hoặc clone repository này về máy.
-2. Đảm bảo bạn đã cài đặt [Node.js](https://nodejs.org/) và [Capacitor CLI](https://capacitorjs.com/docs/getting-started).
-3. Hoặc cách đơn giản nhất: Sử dụng **GitHub Actions** có sẵn.
-   - Vào tab **Actions** trên GitHub.
-   - Chọn workflow **Build APK**.
-   - Nhấn **Run workflow**.
-   - Sau vài phút, file `Dousob.apk` sẽ xuất hiện trong phần [Releases](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/tag/latest).
-
----
-
-## 🤝 Đóng góp
-
-Mọi đóng góp về tính năng, báo cáo lỗi (bug) hay cải thiện giao diện đều rất được hoan nghênh! Hãy tạo một [Issue](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/issues) mới hoặc gửi Pull Request.
+Vào tab **Actions**, chọn **Build APK**, bấm **Run workflow**. Sau khoảng vài phút, file `Dousob.apk` mới sẽ xuất hiện ở trang Releases.
 
 ---
 
 <div align="center">
 
-**Được xây dựng bằng 💚 để mỗi phút của bạn đều có ý nghĩa.**
+Làm bằng 💚 để mỗi phút của bạn đều có ích.
 
-[![GitHub stars](https://img.shields.io/github/stars/namnguyen95800-coder/namnguyen95800-coder.github.io?style=social)](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io)
-[![GitHub forks](https://img.shields.io/github/forks/namnguyen95800-coder/namnguyen95800-coder.github.io?style=social)](https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io)
-
-</div>￼Enter
+</div>
