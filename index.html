@@ -2048,7 +2048,7 @@ html{overscroll-behavior-y:contain}
         <div id="rp-week-wrap" class="hidden"><div id="rp-week" class="rp-week"></div></div>
         <div class="rp-legend"><span><i class="rp-c pomo"></i>Pomodoro</span><span><i class="rp-c iv"></i>Tập luyện</span><span><i class="rp-c cd"></i>Đếm ngược</span><span><i class="rp-c seq"></i>Quy trình</span><span><i class="rp-c exam"></i>Đồng hồ thi</span><span><i class="rp-c cook"></i>Nấu ăn</span><span><i class="rp-c chess"></i>Cờ vua</span></div>
         <div id="rp-empty" class="rp-empty">Chưa có phiên nào được ghi trong khoảng này.</div>
-      </div></details><details class="stmore"><summary>Mục tiêu, xuất và xoá dữ liệu</summary><div class="stacts"><div class="goalset"><label for="st-goal-in">Mục tiêu mỗi ngày</label><input id="st-goal-in" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="30" autocomplete="off"><span>phút</span></div><button id="st-clear">Xóa thống kê</button><select id="st-csv-range" aria-label="Chọn khoảng thời gian xuất CSV"><option value="all">Tất cả</option><option value="7">7 ngày gần nhất</option><option value="30">30 ngày gần nhất</option></select><button id="st-csv" type="button">Xuất CSV</button></div></details></section>
+      </div></details><details class="stmore"><summary>Mục tiêu, xuất và xoá dữ liệu</summary><div class="stacts"><div class="goalset"><label for="st-goal-in">Mục tiêu mỗi ngày</label><input id="st-goal-in" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="30" autocomplete="off"><span>phút</span></div><button id="st-clear">Xóa thống kê</button><select id="st-csv-range" aria-label="Chọn khoảng thời gian xuất CSV"><option value="all">Tất cả</option><option value="7">7 ngày gần nhất</option><option value="30">30 ngày gần nhất</option></select><button id="st-csv" type="button">Xuất CSV</button><button id="bk-out" type="button">Sao lưu</button><button id="bk-in" type="button">Khôi phục</button><input type="file" id="bk-file" accept=".json,application/json" hidden><div id="bk-msg" role="status" style="flex-basis:100%;font-size:13px;opacity:.8"></div></div></details></section>
     </div>
   </details>
   <details class="help"><summary>Hướng dẫn nhanh</summary><div>
@@ -2074,7 +2074,8 @@ html{overscroll-behavior-y:contain}
     <p><b>Mẹo:</b> bấm Lưu mẫu để dùng lại cài đặt, bấm Chia sẻ để gửi link cho bạn bè. Trên máy tính dùng phím Space (bắt đầu hoặc dừng), L (ghi vòng), R (đặt lại), F (chế độ tập trung), M (phát hoặc dừng nhạc), các phím số 1 đến 9 và 0 (chuyển nhanh công cụ), dấu ? (xem tất cả phím tắt). Trên điện thoại, bấm biểu tượng ở góc trên bên phải đồng hồ để vào chế độ tập trung. Cần để trang mở thì đồng hồ mới kêu đúng giờ, mở lại trang trong 24 giờ vẫn giữ đồng hồ đang chạy.</p>
     <p><button type="button" id="kb-open">⌨ Xem phím tắt trên máy tính</button> <button type="button" id="fbBtn">💬 Góp ý, báo lỗi</button> <a href="cong-cu">📚 Danh sách công cụ</a> <a href="chinh-sach-quyen-rieng">🔒 Quyền riêng tư</a></p>
   </div></details>
-  <details class="help donate" id="donate">
+  <nav class="toolnav" aria-label="Tất cả công cụ" style="margin:18px 0;text-align:center"><p style="font-weight:700;margin:0 0 8px">📚 Tất cả công cụ</p><p style="display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;font-size:13.5px;line-height:1.7;margin:0"><a href="bam-gio">Bấm giờ</a><a href="dem-nguoc">Đếm ngược</a><a href="pomodoro">Pomodoro</a><a href="tap-luyen">Tập luyện</a><a href="chuoi-buoc">Chuỗi bước</a><a href="dong-ho-thi">Đồng hồ thi</a><a href="dem-ngay">Đếm ngày</a><a href="dong-ho-co-vua">Đồng hồ cờ vua</a><a href="hen-gio-nau-an">Nấu ăn</a><a href="hit-tho">Hít thở</a><a href="nhac-nho">Nhắc nhở</a><a href="gio-the-gioi">Giờ thế giới</a><a href="tinh-gio-ngu">Tính giờ ngủ</a><a href="tinh-ngay">Tính ngày</a><a href="lich-am">Âm lịch</a><a href="tinh-tuoi">Tính tuổi</a><a href="cong-tru-gio">Cộng trừ giờ</a><a href="dong-ho-de-ban">Đồng hồ để bàn</a><a href="tinh-luong-gio">Tính lương giờ</a><a href="chuoi-thoi-quen">Chuỗi thói quen</a><a href="mat-troi-moc-lan">Mặt trời mọc lặn</a><a href="may-go-nhip">Máy gõ nhịp</a><a href="nhac-nen">Nhạc của tôi</a><a href="ghi-gio-cong-viec">Ghi giờ công việc</a><a href="gio-hop-chung">Họp chung</a></p></nav>
+<details class="help donate" id="donate">
     <summary>☕ Ủng hộ người làm</summary>
     <div>
       <p>Bấm giờ miễn phí và không có quảng cáo. Nếu thấy hữu ích, bạn có thể mời mình một ly cà phê, hoàn toàn tùy tâm.</p>
@@ -4860,5 +4861,255 @@ html{overscroll-behavior-y:contain}
 })();
 </script>
 <script>(function(){try{var a=document.getElementById('dlApk');if(a&&/Android/i.test(navigator.userAgent)&&!document.documentElement.classList.contains('in-app'))a.hidden=false}catch(e){}})();</script>
+<script>
+/* SAO LƯU / KHÔI PHỤC: gom cài đặt, thống kê, mẫu, nhắc nhở... trong localStorage thành một file JSON. Nhạc trong máy (IndexedDB) không nằm trong bản sao lưu. */
+(function(){try{
+var out=document.getElementById('bk-out'),inn=document.getElementById('bk-in'),fi=document.getElementById('bk-file'),msg=document.getElementById('bk-msg');
+if(!out||!inn||!fi||!msg)return;
+var KEY=/^bg(2x?)?-/;
+function en(){return document.documentElement.lang==='en'}
+function T(v,e){return en()?e:v}
+function labels(){out.textContent=T('Sao lưu','Back up');inn.textContent=T('Khôi phục','Restore');
+ if(!msg.getAttribute('data-set'))msg.textContent=T('Sao lưu gồm cài đặt, thống kê, mẫu và nhắc nhở. Nhạc trong máy không nằm trong bản sao lưu.','Backup includes settings, stats, presets and reminders. Music from your device is not included.')}
+function say(s){msg.setAttribute('data-set','1');msg.textContent=s}
+function collect(){var o={},i,k;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(KEY.test(k)&&k!=='bg2x-upchk')o[k]=localStorage.getItem(k)}return o}
+out.addEventListener('click',function(){try{
+ var data=collect(),n=Object.keys(data).length;
+ var text=JSON.stringify({app:'bam-gio',version:1,exported:new Date().toISOString(),data:data});
+ var d=new Date(),p=function(x){return x<10?'0'+x:''+x};
+ var fname='sao-luu-bam-gio-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';
+ if(window.SAVE&&window.SAVE(fname,text,'application/json')){say(T('Đã sao lưu ','Backed up ')+n+T(' mục dữ liệu.',' items.'));return}
+ var blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1000);
+ say(T('Đã sao lưu ','Backed up ')+n+T(' mục dữ liệu.',' items.'));
+}catch(e){say(T('Không sao lưu được.','Could not back up.'))}});
+inn.addEventListener('click',function(){fi.value='';fi.click()});
+fi.addEventListener('change',function(){try{
+ var f=fi.files&&fi.files[0];if(!f)return;
+ if(f.size>5*1024*1024){say(T('File quá lớn, không phải bản sao lưu của Bấm giờ.','File is too large to be a Bấm giờ backup.'));return}
+ var r=new FileReader();
+ r.onload=function(){try{
+  var j=JSON.parse(String(r.result)),d=j&&j.data,keys=[],k;
+  if(!j||j.app!=='bam-gio'||!d||typeof d!=='object'){say(T('Đây không phải file sao lưu của Bấm giờ.','This is not a Bấm giờ backup file.'));return}
+  for(k in d){if(KEY.test(k)&&k!=='bg2x-upchk'&&typeof d[k]==='string')keys.push(k)}
+  if(!keys.length){say(T('File sao lưu không có dữ liệu hợp lệ.','The backup has no valid data.'));return}
+  if(!window.confirm(T('Khôi phục '+keys.length+' mục dữ liệu? Dữ liệu hiện tại trên máy sẽ bị thay thế.','Restore '+keys.length+' items? Current data on this device will be replaced.')))return;
+  var old=[],i;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(KEY.test(k)&&k!=='bg2x-upchk')old.push(k)}
+  old.forEach(function(x){localStorage.removeItem(x)});
+  keys.forEach(function(x){localStorage.setItem(x,d[x])});
+  say(T('Đã khôi phục, đang tải lại...','Restored, reloading...'));
+  setTimeout(function(){location.reload()},700);
+ }catch(e){say(T('Không đọc được file sao lưu.','Could not read the backup file.'))}};
+ r.onerror=function(){say(T('Không đọc được file.','Could not read the file.'))};
+ r.readAsText(f);
+}catch(e){say(T('Không khôi phục được.','Could not restore.'))}});
+labels();
+new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+}catch(e){}})();
+</script>
+<script>
+/* NHẬT KÝ PHIÊN: hỏi 1 chạm sau mỗi phiên Pomodoro / buổi tập / món nấu, và lý do khi dừng giữa chừng.
+   Dữ liệu lưu ở localStorage 'bg2x-ci' (nằm trong bản sao lưu). Thẻ "Giờ vàng & thói quen" nằm ở phần Thống kê. */
+(function(){try{
+var KEY='bg2x-ci',OFF='bg2x-ci-off',MAX=600;
+function $(i){return document.getElementById(i)}
+function en(){return document.documentElement.lang==='en'}
+function T(v,e){return en()?e:v}
+function load(){try{var a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function save(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(-MAX)))}catch(e){}}
+function off(){try{return localStorage.getItem(OFF)==='1'}catch(e){return false}}
+function curM(){var b=document.querySelector('#tabs [aria-selected="true"]');return b?b.getAttribute('data-m'):''}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* ---- giao diện ---- */
+var st=document.createElement('style');
+st.textContent='#ci-sheet{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);z-index:9000;max-width:520px;margin:0 auto;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:16px;padding:12px 14px;box-shadow:0 10px 34px rgba(0,0,0,.28)}'
++'#ci-sheet .ci-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:15px}'
++'#ci-sheet .ci-x{min-width:36px;min-height:36px;border:0;background:transparent;color:var(--muted,#667);font-size:18px}'
++'#ci-sheet .ci-c{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}'
++'#ci-sheet .ci-c button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--line,#ddd);background:var(--bg,#f4f4f4);color:var(--ink,#111);font-size:15px;font-weight:600}'
++'#ci-sheet .ci-c button.sc{flex:1 1 52px;font-size:22px;padding:6px 0}'
++'#ci-sheet .ci-n{margin-top:8px;font-size:12px;color:var(--muted,#667)}'
++'#ci-card .ci-b{padding:2px 2px 8px;font-size:14px;line-height:1.55}#ci-card .ci-b p{margin:8px 0}#ci-card .ci-b b{font-weight:700}#ci-card .ci-m{color:var(--muted,#667);font-size:12.5px}'
++'#ci-card .ci-t{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}#ci-card .ci-t button{min-height:40px}';
+document.head.appendChild(st);
+
+var sheet=null,hideT=null;
+function closeSheet(){if(hideT){clearTimeout(hideT);hideT=null}if(sheet&&sheet.parentNode)sheet.parentNode.removeChild(sheet);sheet=null}
+function ask(title,chips,onPick,note,score){
+  if(off())return; closeSheet();
+  sheet=document.createElement('div');sheet.id='ci-sheet';sheet.setAttribute('role','dialog');sheet.setAttribute('aria-label',title);
+  var h='<div class="ci-h"><span>'+esc(title)+'</span><button type="button" class="ci-x" aria-label="'+T('Đóng','Close')+'">✕</button></div><div class="ci-c">';
+  chips.forEach(function(c,i){h+='<button type="button" data-i="'+i+'"'+(score?' class="sc" aria-label="'+(i+1)+'/5"':'')+'>'+esc(c)+'</button>'});
+  h+='</div>'+(note?'<div class="ci-n">'+esc(note)+'</div>':'');
+  sheet.innerHTML=h;
+  sheet.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.classList.contains('ci-x')){closeSheet();return}
+    var i=parseInt(b.getAttribute('data-i'),10);if(isNaN(i))return;
+    onPick(i);closeSheet();draw();
+  });
+  document.body.appendChild(sheet);
+  hideT=setTimeout(closeSheet,25000);
+}
+function push(o){var a=load();o.t=o.t||Date.now();a.push(o);save(a)}
+
+/* ---- sau khi hoàn thành ---- */
+var FACES=['😵','😕','🙂','😀','🔥'];
+function onDone(m,ms){
+  var t=Date.now();
+  if(m==='pomo'){
+    ask(T('Phiên vừa xong, bạn tập trung thế nào?','Session done. How focused were you?'),FACES,function(i){push({t:t,k:'focus',m:m,d:ms,s:i+1})},T('1 = rất xao nhãng, 5 = rất tập trung','1 = very distracted, 5 = fully focused'),true);
+  }else if(m==='iv'){
+    var L=[T('Dễ','Easy'),T('Vừa','Okay'),T('Nặng','Hard'),T('Kiệt sức','Wiped out')];
+    ask(T('Buổi tập hôm nay thấy thế nào?','How did that workout feel?'),L,function(i){push({t:t,k:'work',m:m,d:ms,s:i+1})});
+  }else if(m==='cook'){
+    var C=[T('Chín vừa','Just right'),T('Cần thêm 1 phút','Needs 1 more min'),T('Cần thêm 2 phút','Needs 2 more min'),T('Cần thêm 5 phút','Needs 5 more min'),T('Hơi quá','Overdone')],X=[0,1,2,5,-1];
+    ask(T('Món vừa xong thế nào?','How did the dish turn out?'),C,function(i){push({t:t,k:'cook',m:m,d:ms,x:X[i]})});
+  }
+}
+var orig=window.logStat;
+if(typeof orig==='function'){
+  window.logStat=function(m,ms){var r=orig.apply(this,arguments);try{if(m==='pomo'||m==='iv'||m==='cook')setTimeout(function(){onDone(m,ms)},500)}catch(e){}return r};
+}
+
+/* ---- khi dừng giữa chừng (bấm Đặt lại lúc đang làm) ---- */
+var disp=$('disp'),side=$('side'),ws=null,m0='',resetAt=0;
+if(side)side.addEventListener('click',function(){resetAt=Date.now()},true);
+var REASONS=[['phone',T('Điện thoại, mạng','Phone, internet')],['call',T('Có người gọi, hỏi','Interrupted')],['tired',T('Mệt','Tired')],['hungry',T('Đói, khát','Hungry, thirsty')],['early',T('Xong sớm','Finished early')],['other',T('Khác','Other')]];
+if(disp)new MutationObserver(function(){
+  var s=disp.getAttribute('data-state');
+  if(s==='work'&&ws===null){ws=Date.now();m0=curM()}
+  else if(s==='rest'){ws=null}
+  else if(s==='idle'&&ws!==null){
+    var el=Date.now()-ws,m=m0;ws=null;
+    if(Date.now()-resetAt<1500&&el>=60000&&(m==='pomo'||m==='iv')){
+      var t=Date.now();REASONS=REASONS.map(function(r){return r});
+      ask(T('Bạn dừng giữa chừng vì sao?','Why did you stop early?'),REASONS.map(function(r){return r[1]}),function(i){push({t:t,k:'stop',m:m,d:el,r:REASONS[i][0]})});
+    }
+  }
+}).observe(disp,{attributes:true,attributeFilter:['data-state']});
+
+/* ---- thẻ thống kê ---- */
+var card=null,body=null;
+function med(a){a=a.slice().sort(function(x,y){return x-y});var n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):0}
+function two(n){return(n<10?'0':'')+n}
+function win(h){return two(h)+':00–'+two((h+2)%24)+':00'}
+function RN(k){return{phone:T('điện thoại, mạng','phone, internet'),call:T('bị người khác ngắt','interruptions'),tired:T('mệt','tiredness'),hungry:T('đói, khát','hunger, thirst'),early:T('xong sớm','finishing early'),other:T('lý do khác','other reasons')}[k]||k}
+function draw(){
+  if(!body)return;
+  var a=load(),h='',foc=a.filter(function(e){return e.k==='focus'&&e.s}),stops=a.filter(function(e){return e.k==='stop'}),wk=a.filter(function(e){return e.k==='work'}),ck=a.filter(function(e){return e.k==='cook'});
+  /* giờ vàng */
+  var by={};foc.forEach(function(e){var hr=Math.floor(new Date(e.t).getHours()/2)*2;(by[hr]=by[hr]||[]).push(e.s)});
+  var rows=Object.keys(by).map(function(k){var v=by[k],s=0;v.forEach(function(x){s+=x});return{h:+k,n:v.length,avg:s/v.length}}).filter(function(r){return r.n>=3});
+  if(foc.length<5){h+='<p>'+T('<b>Giờ vàng:</b> cần thêm dữ liệu, đã có '+foc.length+'/5 phiên Pomodoro được chấm điểm.','<b>Golden hours:</b> need more data, '+foc.length+'/5 rated Pomodoro sessions so far.')+'</p>'}
+  else if(!rows.length){h+='<p>'+T('<b>Giờ vàng:</b> đã có '+foc.length+' phiên, nhưng chưa khung 2 giờ nào đủ 3 phiên để so sánh.','<b>Golden hours:</b> '+foc.length+' sessions so far, but no 2-hour window has 3 yet.')+'</p>'}
+  else{rows.sort(function(x,y){return y.avg-x.avg});var b=rows[0],w=rows[rows.length-1];
+    h+='<p>'+T('<b>Giờ vàng của bạn:</b> '+win(b.h)+', trung bình '+b.avg.toFixed(1)+'/5 ('+b.n+' phiên).','<b>Your golden hours:</b> '+win(b.h)+', average '+b.avg.toFixed(1)+'/5 ('+b.n+' sessions).')+'</p>';
+    if(rows.length>1&&w.h!==b.h)h+='<p class="ci-m">'+T('Yếu nhất: '+win(w.h)+' ('+w.avg.toFixed(1)+'/5). Việc khó nên xếp vào giờ vàng.','Weakest: '+win(w.h)+' ('+w.avg.toFixed(1)+'/5). Put hard work in your golden hours.')+'</p>'}
+  /* dừng giữa chừng */
+  var ps=stops.filter(function(e){return e.m==='pomo'});
+  if(ps.length>=3){var cnt={};ps.forEach(function(e){cnt[e.r]=(cnt[e.r]||0)+1});var top=Object.keys(cnt).sort(function(x,y){return cnt[y]-cnt[x]})[0];
+    var mm=Math.round(med(ps.map(function(e){return e.d/60000})));var sg=Math.max(10,Math.floor(mm/5)*5);
+    h+='<p>'+T('<b>Hay dừng giữa chừng:</b> '+ps.length+' lần, nhiều nhất do '+RN(top)+'. Bạn thường dừng quanh phút '+mm+'; thử phiên '+sg+' phút.','<b>Stopping early:</b> '+ps.length+' times, mostly '+RN(top)+'. You usually stop around minute '+mm+'; try '+sg+'-minute sessions.')+'</p>'}
+  else if(stops.length){h+='<p class="ci-m">'+T('Đã ghi '+stops.length+' lần dừng giữa chừng. Cần 3 lần Pomodoro để đưa ra gợi ý.','Logged '+stops.length+' early stops. 3 Pomodoro stops are needed for a tip.')+'</p>'}
+  /* tập luyện */
+  var wk7=wk.filter(function(e){return Date.now()-e.t<7*864e5});
+  if(wk7.length){var s=0;wk7.forEach(function(e){s+=e.s});var lab=[T('dễ','easy'),T('vừa','okay'),T('nặng','hard'),T('kiệt sức','exhausting')][Math.min(3,Math.round(s/wk7.length)-1)];
+    h+='<p>'+T('<b>Tập luyện 7 ngày qua:</b> '+wk7.length+' buổi, cảm giác trung bình '+lab+'.','<b>Workouts, last 7 days:</b> '+wk7.length+', average feel: '+lab+'.')+'</p>'}
+  /* nấu ăn */
+  var cd={};ck.forEach(function(e){var mn=Math.round(e.d/60000);if(mn>=1)(cd[mn]=cd[mn]||[]).push(e.x)});
+  var tips=[];Object.keys(cd).forEach(function(k){var v=cd[k],more=v.filter(function(x){return x>0});if(more.length>=2&&more.length*2>=v.length)tips.push(T('món đặt '+k+' phút: thường cần thêm khoảng '+Math.round(med(more))+' phút','dish set to '+k+' min: usually needs ~'+Math.round(med(more))+' more min'))});
+  if(tips.length)h+='<p>'+T('<b>Nấu ăn:</b> ','<b>Cooking:</b> ')+tips.slice(0,3).join('; ')+'.</p>';
+  if(!a.length)h='<p>'+T('Sau mỗi phiên Pomodoro, buổi tập hoặc món nấu, app sẽ hỏi bạn một chạm. Dữ liệu chỉ nằm trên máy bạn, dùng để tìm giờ vàng và thói quen của chính bạn.','After each Pomodoro, workout or dish, the app asks one quick tap. Data stays on your device and is used to find your golden hours and habits.')+'</p>'+h;
+  h+='<div class="ci-t"><label class="chk"><input type="checkbox" id="ci-ask"'+(off()?'':' checked')+'> '+T('Hỏi sau mỗi phiên','Ask after each session')+'</label><button type="button" id="ci-clr">'+T('Xóa nhật ký này','Clear this log')+'</button></div>';
+  body.innerHTML=h;
+  var c=$('ci-ask');if(c)c.addEventListener('change',function(){try{localStorage.setItem(OFF,c.checked?'0':'1')}catch(e){}if(!c.checked)closeSheet()});
+  var x=$('ci-clr');if(x)x.addEventListener('click',function(){if(window.confirm(T('Xóa toàn bộ nhật ký phiên?','Delete the whole session log?'))){save([]);draw()}});
+}
+var anchor=$('st-badges');
+if(anchor&&anchor.parentNode){
+  card=document.createElement('details');card.className='stmore';card.id='ci-card';
+  card.innerHTML='<summary id="ci-sum"></summary><div class="ci-b" id="ci-body"></div>';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  body=$('ci-body');
+  function lab(){var s=$('ci-sum');if(s)s.textContent=T('Giờ vàng và thói quen của bạn','Your golden hours and habits')}
+  lab();card.addEventListener('toggle',function(){if(card.open)draw()});
+  draw();
+  new MutationObserver(function(){lab();draw()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+}
+}catch(e){}})();
+</script>
+<script>
+/* NHẬT KÝ GIẤC NGỦ (trong công cụ Tính giờ ngủ): bấm "đi ngủ" / "vừa dậy" hoặc nhập tay, xem trung bình 7 đêm. Lưu ở localStorage 'bg2x-sl' và 'bg2x-sl-p'. */
+(function(){try{
+var KEY='bg2x-sl',PEND='bg2x-sl-p',panel=document.getElementById('panel');if(!panel)return;
+function en(){return document.documentElement.lang==='en'}
+function T(v,e){return en()?e:v}
+function curM(){var b=document.querySelector('#tabs [aria-selected="true"]');return b?b.getAttribute('data-m'):''}
+function load(){try{var a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function save(a){try{localStorage.setItem(KEY,JSON.stringify(a.slice(-120)))}catch(e){}}
+function pend(){try{var v=parseInt(localStorage.getItem(PEND),10);return isNaN(v)?0:v}catch(e){return 0}}
+function two(n){return(n<10?'0':'')+n}
+function hm(ts){var d=new Date(ts);return two(d.getHours())+':'+two(d.getMinutes())}
+function dur(min){min=Math.round(min);var h=Math.floor(min/60),m=min%60;return T(h+' giờ '+(m?m+' phút':''),h+'h '+(m?m+'m':'')).trim()}
+function mins(ts){var d=new Date(ts);return d.getHours()*60+d.getMinutes()}
+function avg(a){var s=0;a.forEach(function(x){s+=x});return s/a.length}
+function sd(a){var m=avg(a),s=0;a.forEach(function(x){s+=(x-m)*(x-m)});return Math.sqrt(s/a.length)}
+function clock(min){min=((Math.round(min)%1440)+1440)%1440;return two(Math.floor(min/60))+':'+two(min%60)}
+function html(){
+  var a=load().slice(-7),p=pend(),h='<div id="sl-log" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line,#ddd)">';
+  h+='<p class="hint"><b>'+T('Nhật ký giấc ngủ của bạn','Your sleep log')+'</b></p>';
+  if(p){h+='<p class="hint">'+T('Đang ghi: bạn đi ngủ lúc '+hm(p)+'. Bấm "Tôi vừa dậy" khi thức dậy.','Tracking: you went to bed at '+hm(p)+'. Tap "I just woke up" when you wake.')+'</p>';
+    h+='<div class="chips2"><button type="button" id="sl-wake">☀️ '+T('Tôi vừa dậy','I just woke up')+'</button><button type="button" id="sl-cancel">'+T('Hủy','Cancel')+'</button></div>'}
+  else h+='<div class="chips2"><button type="button" id="sl-bed">😴 '+T('Tôi đi ngủ bây giờ','I am going to bed now')+'</button></div>';
+  h+='<details style="margin:10px 0"><summary>'+T('Nhập tay đêm qua','Enter last night manually')+'</summary><div class="row"><label>'+T('Đi ngủ lúc','Bedtime')+'<input type="time" id="sl-mb" value="23:00"></label><label>'+T('Dậy lúc','Woke at')+'<input type="time" id="sl-mw" value="06:30"></label></div><div class="chips2"><button type="button" id="sl-save">'+T('Lưu đêm qua','Save last night')+'</button></div></details>';
+  if(a.length){
+    var d=a.map(function(e){return(e.w-e.b)/60000}),w=a.map(function(e){return mins(e.w)}),b=a.map(function(e){var m=mins(e.b);return m<720?m+1440:m});
+    h+='<p class="hint">'+T('<b>'+a.length+' đêm gần nhất:</b> ngủ trung bình '+dur(avg(d))+'.','<b>Last '+a.length+' nights:</b> average sleep '+dur(avg(d))+'.')+'</p>';
+    h+='<p class="hint">'+T('Giờ đi ngủ trung bình '+clock(avg(b))+', thức dậy '+clock(avg(w))+'.','Average bedtime '+clock(avg(b))+', wake-up '+clock(avg(w))+'.')+'</p>';
+    if(a.length>=3)h+='<p class="hint">'+T('Giờ đi ngủ lệch khoảng ±'+Math.round(sd(b))+' phút mỗi đêm. Càng đều thì nhịp sinh học càng ổn định.','Your bedtime varies by about ±'+Math.round(sd(b))+' min. A steadier schedule helps your body clock.')+'</p>';
+    var l=a[a.length-1];h+='<p class="hint">'+T('Đêm gần nhất: '+hm(l.b)+' → '+hm(l.w)+' ('+dur((l.w-l.b)/60000)+').','Last night: '+hm(l.b)+' → '+hm(l.w)+' ('+dur((l.w-l.b)/60000)+').')+'</p>';
+    h+='<div class="chips2"><button type="button" id="sl-clr">'+T('Xóa nhật ký ngủ','Clear sleep log')+'</button></div>';
+  }else h+='<p class="hint">'+T('Chưa có đêm nào được ghi. Ghi vài đêm để xem trung bình và độ đều giờ ngủ. Dữ liệu chỉ nằm trên máy bạn.','No nights logged yet. Log a few to see averages and consistency. Data stays on your device.')+'</p>';
+  return h+'</div>';
+}
+function inject(){
+  if(curM()!=='sleep')return;
+  var box=panel.querySelector('.tcalc');if(!box)return;
+  var old=document.getElementById('sl-log');
+  if(old&&old.getAttribute('data-l')===(en()?'en':'vi')&&old.getAttribute('data-v')===String(load().length)+':'+pend())return;
+  if(old)old.parentNode.removeChild(old);
+  var d=document.createElement('div');d.innerHTML=html();var el=d.firstChild;
+  el.setAttribute('data-l',en()?'en':'vi');el.setAttribute('data-v',String(load().length)+':'+pend());
+  box.appendChild(el);
+}
+new MutationObserver(inject).observe(panel,{childList:true,subtree:true});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('button');if(!b||!b.id||b.id.indexOf('sl-')!==0)return;
+  var id=b.id,now=Date.now();
+  if(id==='sl-bed'){try{localStorage.setItem(PEND,String(now))}catch(x){}}
+  else if(id==='sl-cancel'){try{localStorage.removeItem(PEND)}catch(x){}}
+  else if(id==='sl-wake'){var p=pend(),mn=(now-p)/60000;
+    if(p&&mn>=60&&mn<=1000){var a=load();a.push({b:p,w:now});save(a);try{localStorage.removeItem(PEND)}catch(x){}}
+    else if(p&&mn<60){window.alert(T('Mới ngủ chưa đến 1 giờ. Hãy bấm Tôi vừa dậy khi thức thật sự.','Less than an hour so far. Tap again when you really wake up.'));return}
+    else{try{localStorage.removeItem(PEND)}catch(x){}window.alert(T('Không tính được giờ ngủ. Hãy dùng mục nhập tay.','Could not work out the sleep time. Use manual entry.'))}}
+  else if(id==='sl-save'){var bi=document.getElementById('sl-mb'),wi=document.getElementById('sl-mw');
+    if(!bi||!wi||!bi.value||!wi.value)return;
+    var bp=bi.value.split(':'),wp=wi.value.split(':'),wd=new Date();wd.setHours(+wp[0],+wp[1],0,0);
+    if(wd.getTime()>now)wd.setDate(wd.getDate()-1);
+    var bd=new Date(wd.getTime());bd.setHours(+bp[0],+bp[1],0,0);if(bd.getTime()>=wd.getTime())bd.setDate(bd.getDate()-1);
+    var mm=(wd.getTime()-bd.getTime())/60000;
+    if(mm<60||mm>1000){window.alert(T('Giờ ngủ không hợp lý.','That sleep duration does not look right.'));return}
+    var a2=load();a2.push({b:bd.getTime(),w:wd.getTime()});save(a2)}
+  else if(id==='sl-clr'){if(!window.confirm(T('Xóa nhật ký giấc ngủ?','Delete the sleep log?')))return;save([]);try{localStorage.removeItem(PEND)}catch(x){}}
+  else return;
+  inject();
+});
+document.getElementById('tabs')&&document.getElementById('tabs').addEventListener('click',function(){setTimeout(inject,60)});
+new MutationObserver(function(){inject()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+inject();
+}catch(e){}})();
+</script>
 </body>
 </html>
