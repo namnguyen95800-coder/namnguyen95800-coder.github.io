@@ -1,14 +1,20 @@
 {
+  "id": "./",
+  "//": "bản sửa 14/11/2026",
   "name": "Bấm giờ",
   "short_name": "Bấm giờ",
   "description": "Bấm giờ, đếm ngược, Pomodoro, cờ vua, nhắc nhở và nhiều đồng hồ khác",
   "lang": "vi",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#0d1a20",
   "theme_color": "#0d1a20",
+  "categories": ["productivity", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icon-192.png",
@@ -21,6 +27,26 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bấm giờ",
+      "short_name": "Bấm giờ",
+      "description": "Đo thời gian và ghi từng vòng",
+      "url": "./?tool=sw"
+    },
+    {
+      "name": "Đếm ngược",
+      "short_name": "Đếm ngược",
+      "description": "Hẹn giờ và báo khi hết giờ",
+      "url": "./?tool=cd"
+    },
+    {
+      "name": "Pomodoro",
+      "short_name": "Pomodoro",
+      "description": "Tập trung theo phiên 25/5",
+      "url": "./?tool=pomo"
     }
   ]
 }
