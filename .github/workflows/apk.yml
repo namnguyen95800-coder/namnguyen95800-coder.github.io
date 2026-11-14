@@ -1,8 +1,13 @@
 name: Build APK
+# Bản sửa 14/11/2026
 
 # Chạy thủ công: vào tab Actions > Build APK > Run workflow
 on:
   workflow_dispatch:
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -24,14 +29,16 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - uses: gradle/actions/setup-gradle@v4
+
       - name: Tạo dự án Capacitor
         run: |
           mkdir app && cd app
           npm init -y
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/local-notifications@7 @capacitor/app@7 @capacitor/filesystem@7 @capacitor/share@7
+          npm install @capacitor/core@7.6.10 @capacitor/cli@7.6.10 @capacitor/android@7.6.10 @capacitor/local-notifications@7.0.7 @capacitor/app@7.1.2 @capacitor/filesystem@7.1.9 @capacitor/share@7.0.4
           mkdir www
           echo '<!doctype html><meta charset="utf-8"><title>Dousob</title><body style="background:#0b1020"></body>' > www/index.html
-          cp ../index.html ../manifest.json ../icon-192.png ../icon-512.png ../og-image.png ../ung-ho-mb.png ../ung-ho-momo.png www/ || true
+          cp ../index.html ../app.css ../app.js ../manifest.json ../icon-192.png ../icon-512.png ../og-image.png ../ung-ho-mb.png ../ung-ho-momo.png www/ || true
           cat > capacitor.config.json <<'JSON'
           {
             "appId": "com.dousob.bamgio",
@@ -1374,7 +1381,7 @@ jobs:
           assert '</activity>' in m
           m = m.replace('</activity>', '    <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />\n        </activity>', 1)
           m = m.replace('</application>', '    <receiver android:name=".NotifActionReceiver" android:exported="false" />\n    <service android:name=".MusicService" android:exported="false" android:foregroundServiceType="mediaPlayback" />\n    </application>', 1)
-          m = m.replace('<application', add + '    <application', 1)
+          m = m.replace('<application', add + '    <application android:allowBackup="false" android:usesCleartextTraffic="false"', 1)
           open(p, 'w', encoding='utf-8').write(m)
           # 2) build.gradle: phiên bản, ký bản release, bỏ kiểm tra lint chặn build
           p = 'app/android/app/build.gradle'
@@ -1383,10 +1390,10 @@ jobs:
           g = re.sub(r'versionName\s*=?\s*"[^"]*"', 'versionName "1.0.' + run + '"', g, count=1)
           sign = """    signingConfigs {
                   release {
-                      storeFile file(System.getProperty('user.home') + '/.android/debug.keystore')
-                      storePassword 'android'
-                      keyAlias 'androiddebugkey'
-                      keyPassword 'android'
+                      storeFile file(System.getenv('ANDROID_KEYSTORE_PATH') ?: (System.getProperty('user.home') + '/.android/debug.keystore'))
+                      storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD') ?: 'android'
+                      keyAlias System.getenv('ANDROID_KEY_ALIAS') ?: 'androiddebugkey'
+                      keyPassword System.getenv('ANDROID_KEY_PASSWORD') ?: 'android'
                   }
               }
               lint {
@@ -1467,6 +1474,26 @@ jobs:
           Y/pQnLEeAm4EYmywJ3g0dEy2kOIQSJQLuYDxWZp2fO3nkzYn4Opw6bTb
           EOF
 
+      - name: Khoá ký (tuỳ chọn, dùng GitHub Secrets)
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            {
+              echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore"
+              echo "ANDROID_KEYSTORE_PASSWORD=$KS_PASS"
+              echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
+              echo "ANDROID_KEY_PASSWORD=$KEY_PASS"
+            } >> "$GITHUB_ENV"
+            echo "Dùng khoá ký release từ Secrets."
+          else
+            echo "Chưa có Secrets, dùng khoá debug (chỉ để thử)."
+          fi
+
       - name: Build APK
         run: |
           cd app/android
@@ -1482,5 +1509,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest Dousob.apk --title "APK mới nhất" --notes "build:${RUN} - Bản APK Android mới nhất của Bấm giờ." --latest
+          SUM=$(sha256sum Dousob.apk | cut -d' ' -f1)
+          NOTES=$'build:'"${RUN}"$' - Bản APK Android mới nhất của Bấm giờ.\nSHA-256: '"${SUM}"
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest Dousob.apk --clobber
+            gh release edit latest --title "APK mới nhất" --notes "$NOTES" --latest
+          else
+            gh release create latest Dousob.apk --title "APK mới nhất" --notes "$NOTES" --latest
+          fi

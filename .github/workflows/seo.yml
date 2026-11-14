@@ -1,7 +1,8 @@
 name: Tạo trang giới thiệu cho Google
+# Bản sửa 14/11/2026
 
 # Chạy thủ công: Actions > Tạo trang giới thiệu cho Google > Run workflow
-# Tạo 25 trang công cụ, trang tổng hợp cong-cu.html, sitemap.xml, robots.txt rồi lưu vào repo.
+# Tạo các trang công cụ, trang tổng hợp cong-cu.html, 404.html, sitemap.xml, robots.txt rồi lưu vào repo.
 on:
   workflow_dispatch:
 
@@ -14,11 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Tạo các trang
         run: |
           python3 - <<'PY'
-          import html, json, os, datetime
+          import html, json, os, datetime, subprocess
           BASE = 'https://namnguyen95800-coder.github.io/'  # đổi dòng này khi có tên miền riêng
           APK = 'https://github.com/namnguyen95800-coder/namnguyen95800-coder.github.io/releases/download/latest/Dousob.apk'
           OUT = os.environ.get('OUT', '.')
@@ -290,7 +293,7 @@ jobs:
                 '<meta property="og:type" content="website"><meta property="og:locale" content="vi_VN"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%sog-image.png">'
                 '<meta name="twitter:card" content="summary_large_image">'
                 '<script type="application/ld+json">%s</script><style>%s</style></head><body>'
-                '<header><a class="brand" href="./">⏱ Bấm giờ</a><a href="cong-cu">Tất cả công cụ</a></header><main>'
+                '<header><a class="brand" href="./" aria-label="Bấm giờ, về trang chủ">⏱ Bấm giờ</a><nav aria-label="Chính"><a href="cong-cu">Tất cả công cụ</a></nav></header><main>'
                 '<h1>%s</h1><p>%s</p><a class="cta" href="%s">Mở %s ngay</a><p class="small">Miễn phí, không cần đăng ký, chạy ngay trên trình duyệt.</p>'
                 '<h2>Công cụ này làm được gì</h2><ul>%s</ul><h2>Cách dùng</h2><ol>%s</ol>'
                 '<h2>Câu hỏi thường gặp</h2>%s<h2>Công cụ liên quan</h2>%s'
@@ -308,15 +311,46 @@ jobs:
                 '<title>Tất cả công cụ: đồng hồ, hẹn giờ, lịch âm, tính ngày | Bấm giờ</title>'
                 '<meta name="description" content="25 công cụ thời gian miễn phí: bấm giờ, đếm ngược, Pomodoro, lịch âm, tính tuổi, máy gõ nhịp, giờ họp chung và nhiều hơn nữa.">'
                 '<link rel="canonical" href="%scong-cu"><meta name="theme-color" content="#0b1d2a"><link rel="icon" href="icon-192.png">'
-                '<script type="application/ld+json">%s</script><style>%s</style></head><body><header><a class="brand" href="./">⏱ Bấm giờ</a><a href="./">Mở ứng dụng</a></header>'
+                '<script type="application/ld+json">%s</script><style>%s</style></head><body><header><a class="brand" href="./" aria-label="Bấm giờ, về trang chủ">⏱ Bấm giờ</a><nav aria-label="Chính"><a href="./">Mở ứng dụng</a></nav></header>'
                 '<main><h1>Tất cả công cụ của Bấm giờ</h1><p>Hơn hai mươi công cụ về thời gian, miễn phí, không cần đăng ký, dùng được trên điện thoại và máy tính.</p><div class="grid">%s</div></main></body></html>') % (BASE, json.dumps(ld, ensure_ascii=False), CSS, items)
           os.makedirs(OUT, exist_ok=True)
+          def lastmod(path):
+              try:
+                  d = subprocess.check_output(['git', 'log', '-1', '--format=%cs', '--', path], text=True).strip()
+              except Exception:
+                  d = ''
+              return d or datetime.date.today().isoformat()
+          def notfound():
+              return ('<!doctype html><html lang="vi"><head><meta charset="utf-8">'
+                      '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                      '<meta name="robots" content="noindex"><title>Không tìm thấy trang | Bấm giờ</title>'
+                      '<link rel="icon" href="icon-192.png"><style>' + CSS + '</style></head><body>'
+                      '<header><a class="brand" href="./">⏱ Bấm giờ</a><nav aria-label="Chính"><a href="cong-cu">Tất cả công cụ</a></nav></header>'
+                      '<main><h1>Không tìm thấy trang</h1><p>Đường dẫn này không tồn tại hoặc đã được đổi tên.</p>'
+                      '<a class="cta" href="./">Về trang chủ Bấm giờ</a></main>'
+                      '<footer class="small"><p><a href="./">Trang chủ</a></p></footer></body></html>')
           for t in T:
-              open(os.path.join(OUT, t['slug'] + '.html'), 'w', encoding='utf-8').write(with_more(t, page(t)))
-          open(os.path.join(OUT, 'cong-cu.html'), 'w', encoding='utf-8').write(hub().replace('</main></body></html>', '<p class="small"><a href="' + PRIV + '">Chính sách quyền riêng tư</a></p></main></body></html>', 1))
-          today = datetime.date.today().isoformat()
-          urls = [BASE, BASE + 'cong-cu', BASE + PRIV] + [BASE + t['slug'] for t in T]
-          open(os.path.join(OUT, 'sitemap.xml'), 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join('<url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (u, today) for u in urls) + '</urlset>\n')
+              s = with_more(t, page(t))
+              s = s.replace('<meta name="theme-color" content="#0b1d2a">',
+                            '<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">'
+                            '<meta name="theme-color" content="#0d1620" media="(prefers-color-scheme: dark)">', 1)
+              s = s.replace('<meta name="twitter:card" content="summary_large_image">',
+                            '<meta name="twitter:card" content="summary_large_image">'
+                            '<meta name="twitter:title" content="' + esc(t['title']) + '">'
+                            '<meta name="twitter:description" content="' + esc(t['desc']) + '">'
+                            '<meta name="twitter:image" content="' + BASE + 'og-image.png">'
+                            '<meta property="og:image:width" content="1200">'
+                            '<meta property="og:image:height" content="630">'
+                            '<meta property="og:image:alt" content="' + esc(t['name']) + '">', 1)
+              open(os.path.join(OUT, t['slug'] + '.html'), 'w', encoding='utf-8').write(s)
+          hub_html = hub().replace('25 công cụ thời gian miễn phí', '%d công cụ thời gian miễn phí' % len(T), 1)
+          hub_html = hub_html.replace('</main></body></html>', '<p class="small"><a href="' + PRIV + '">Chính sách quyền riêng tư</a></p></main></body></html>', 1)
+          open(os.path.join(OUT, 'cong-cu.html'), 'w', encoding='utf-8').write(hub_html)
+          open(os.path.join(OUT, '404.html'), 'w', encoding='utf-8').write(notfound())
+          pages = [(BASE, 'index.html'), (BASE + 'cong-cu', 'cong-cu.html'), (BASE + PRIV, PRIV + '.html')]
+          pages += [(BASE + t['slug'], t['slug'] + '.html') for t in T]
+          urls = ''.join('<url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (u, lastmod(p)) for u, p in pages)
+          open(os.path.join(OUT, 'sitemap.xml'), 'w', encoding='utf-8').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + '</urlset>\n')
           open(os.path.join(OUT, 'robots.txt'), 'w', encoding='utf-8').write('User-agent: *\nAllow: /\n\nSitemap: ' + BASE + 'sitemap.xml\n')
           print('Đã tạo', len(T), 'trang công cụ, trang tổng hợp, sitemap.xml và robots.txt')
           PY
