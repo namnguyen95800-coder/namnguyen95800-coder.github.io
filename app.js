@@ -381,11 +381,11 @@ PXR.todo=function(){
  }
  function sortf(a,b){var ad=a.d?dfTo(a.d):9999,bd=b.d?dfTo(b.d):9999;return (a.pr||2)-(b.pr||2)||ad-bd||(a.c||0)-(b.c||0)}
  function draw(){
-  var s=load(),it=s.items,V=[['today',T('Hôm nay','Today')],['soon',T('7 ngày tới','Next 7 days')],['all',T('Tất cả','All')],['done',T('Đã xong','Done')]];var ibn=it.filter(function(x){return x.ib&&!x.done}).length;if(ibn)V.push(['inbox','📥 '+T('Hộp thư','Inbox')]);if(view==='inbox'&&!ibn)view='today';
+  var s=load(),it=s.items,V=[['today',T('Hôm nay','Today')],['soon',T('7 ngày tới','Next 7 days')],['all',T('Tất cả','All')],['done',T('Đã xong','Done')]];var ibn=it.filter(function(x){return x.ib&&!x.done}).length;if(ibn)V.unshift(['inbox','📥 '+T('Hộp thư','Inbox')]);if(view==='inbox'&&!ibn)view='today';
   var pjs=[];it.forEach(function(x){if(x.j&&pjs.indexOf(x.j)<0)pjs.push(x.j)});if(pjf&&pjs.indexOf(pjf)<0)pjf='';
   var list=it.filter(function(x){return inView(x,view)&&(!pjf||x.j===pjf)});
   if(view==='done')list.sort(function(a,b){return b.done-a.done});else list.sort(sortf);
-  var h='<div class="chips2" style="grid-template-columns:repeat(2,1fr)">'+V.map(function(v){var n=it.filter(function(x){return inView(x,v[0])}).length;return '<button type="button" data-v="'+v[0]+'" aria-pressed="'+(v[0]===view)+'"'+(v[0]===view?' style="background:var(--go);color:var(--go-ink)"':'')+'>'+v[1]+' ('+n+')</button>'}).join('')+'</div>';
+  var h=(ibn&&view!=='inbox'?'<div class="card" style="display:block;margin-bottom:10px"><div class="nm">📥 '+T(ibn+' ý nghĩ đang chờ bạn trong Hộp thư.',ibn+' thoughts are waiting in your Inbox.')+'</div><button type="button" data-v="inbox" style="min-height:40px;margin-top:6px">'+T('Xem và xử lý','Review')+'</button></div>':'')+'<div class="chips2" style="grid-template-columns:repeat(2,1fr)">'+V.map(function(v){var n=it.filter(function(x){return inView(x,v[0])}).length;return '<button type="button" data-v="'+v[0]+'" aria-pressed="'+(v[0]===view)+'"'+(v[0]===view?' style="background:var(--go);color:var(--go-ink)"':'')+'>'+v[1]+' ('+n+')</button>'}).join('')+'</div>';
   if(pjs.length)h+='<div class="chips2" style="margin-top:8px;grid-template-columns:repeat(auto-fit,minmax(90px,1fr))"><button type="button" data-pj="" aria-pressed="'+(!pjf)+'"'+(!pjf?' style="background:var(--ink);color:var(--surface)"':'')+'>'+T('Mọi dự án','All projects')+'</button>'+pjs.map(function(p,i){return '<button type="button" data-pj="'+i+'" aria-pressed="'+(p===pjf)+'"'+(p===pjf?' style="background:var(--ink);color:var(--surface)"':'')+'>'+ntr(p)+'</button>'}).join('')+'</div>';
   h+='<div id="td-l" style="margin-top:12px">'+(list.length?list.map(function(x){
     if(x.ib&&!x.done)return '<div class="card" style="display:block;margin-bottom:10px"><div style="overflow-wrap:anywhere;font-weight:700">💭 '+ntr(x.t)+'</div><div class="row" style="margin:8px 0 0;gap:6px"><button type="button" data-a="ib2t" data-id="'+x.id+'">➡ '+T('Thành việc','Make it a task')+'</button><button type="button" data-a="rm" data-id="'+x.id+'" aria-label="'+T('Xóa','Delete')+'">🗑</button></div></div>';
@@ -4403,16 +4403,33 @@ function sprintModal(sp){
 }
 if(LEADER)setInterval(function(){try{var sp=rd('bg2x-sprint',null);if(sp&&sp.until&&Date.now()>=sp.until){try{localStorage.removeItem('bg2x-sprint')}catch(e){}sprintModal(sp)}}catch(e){}},4000);
 /* ---- ngăn kéo ý nghĩ ---- */
+function inboxItems(){var s=rd('bg2x-todo',null);return s&&Array.isArray(s.items)?s.items.filter(function(x){return x.ib&&!x.done}):[]}
+function ideaBadge(){var b=$('bgidea');if(!b)return;var n=inboxItems().length;b.textContent=n?('💭 '+n):'💭';b.style.width=n?'auto':'36px';b.style.padding=n?'0 10px':'0';b.style.fontSize=n?'15px':'18px'}
+function ideaList(){
+  var l=$('bgidea-l');if(!l)return;var a=inboxItems(),last=a.slice(-3).reverse();
+  l.innerHTML=last.map(function(x){return '<div style="margin-top:6px;overflow-wrap:anywhere" data-t></div>'}).join('')+'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" data-ib="view" style="min-height:42px;padding:6px 12px;border-radius:12px;border:0;background:var(--go);color:var(--go-ink);font-weight:700">📥 '+T('Xem hộp thư','Open inbox')+(a.length?' ('+a.length+')':'')+'</button><button type="button" data-ib="close" style="min-height:42px;padding:6px 14px;border-radius:12px;border:1px solid var(--line,#ddd);background:var(--bg,#fff);color:var(--ink,#111);font-weight:700">'+T('Xong','Done')+'</button></div>';
+  [].forEach.call(l.querySelectorAll('[data-t]'),function(e,i){e.textContent='• '+last[i].t});
+}
+function ideaClose(){var b=$('bgidea-box');if(b&&b.parentNode)b.parentNode.removeChild(b)}
 function ideaOpen(){
   if($('bgidea-box'))return;
-  var b=document.createElement('div');b.id='bgidea-box';b.style.cssText='position:fixed;left:10px;right:10px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:9500;max-width:520px;margin:0 auto;padding:10px;border-radius:16px;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);box-shadow:0 12px 40px rgba(0,0,0,.35)';
-  b.innerHTML='<div style="font-size:13px;color:var(--muted,#667);margin-bottom:6px">'+T('Ghi nhanh một ý nghĩ để xử lý sau (Enter để lưu, Esc để đóng)','Jot down a thought for later (Enter to save, Esc to close)')+'</div><input id="bgidea-i" type="text" maxlength="120" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px;font-size:16px;border-radius:12px;border:1px solid var(--line,#ddd);background:var(--bg,#fff);color:var(--ink,#111)">';
-  document.body.appendChild(b);var i=$('bgidea-i');i.focus();
-  i.addEventListener('keydown',function(e){if(e.key==='Escape'){if(b.parentNode)b.parentNode.removeChild(b)}else if(e.key==='Enter'&&i.value.trim()){addTodo({t:i.value.trim(),ib:1,pr:3});if(b.parentNode)b.parentNode.removeChild(b);var x=$('bgidea');if(x){var o=x.textContent;x.textContent='✓';setTimeout(function(){x.textContent=o},1200)}}});
+  var b=document.createElement('div');b.id='bgidea-box';b.style.cssText='position:fixed;left:10px;right:10px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:9500;max-width:520px;margin:0 auto;padding:12px;border-radius:16px;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px';
+  b.innerHTML='<div style="font-size:13px;color:var(--muted,#667);margin-bottom:6px">'+T('Ghi nhanh một ý nghĩ để xử lý sau (Enter để lưu)','Jot down a thought for later (Enter to save)')+'</div><input id="bgidea-i" type="text" maxlength="120" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px;font-size:16px;border-radius:12px;border:1px solid var(--line,#ddd);background:var(--bg,#fff);color:var(--ink,#111)"><div id="bgidea-m" role="status" style="min-height:18px;margin-top:6px;font-weight:700;color:var(--go,#0a7)"></div><div id="bgidea-l"></div>';
+  document.body.appendChild(b);ideaList();var i=$('bgidea-i');i.focus();
+  i.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ideaClose();return}
+    if(e.key==='Enter'&&i.value.trim()){addTodo({t:i.value.trim(),ib:1,pr:3});i.value='';var m=$('bgidea-m');m.textContent='✓ '+T('Đã ghi vào Hộp thư. Bạn có thể ghi tiếp.','Saved to Inbox. You can add more.');ideaList();ideaBadge();clearTimeout(ideaOpen.t);ideaOpen.t=setTimeout(function(){var x=$('bgidea-m');if(x)x.textContent=''},4000)}
+  });
+  b.addEventListener('click',function(e){
+    var x=e.target.closest('button[data-ib]');if(!x)return;
+    if(x.getAttribute('data-ib')==='close'){ideaClose();return}
+    try{localStorage.setItem('bg2x-todo-view','"inbox"')}catch(er){}
+    ideaClose();if(LEADER)routeOpen('todo');else send({t:'req',req:'open',tool:'todo'});
+  });
 }
 function ideaUI(){
   var t=tabsEl();if(!t)return;var s=t.querySelector('[data-m][aria-selected="true"]'),m=s?s.getAttribute('data-m'):'',d=$('disp'),b=$('bgidea');
-  if(m==='pomo'&&d){if(!b){b=document.createElement('button');b.id='bgidea';b.type='button';b.textContent='💭';b.title=T('Ghi nhanh ý nghĩ','Jot a thought');b.setAttribute('aria-label',T('Ghi nhanh ý nghĩ','Jot a thought'));b.style.cssText='position:absolute;top:12px;right:56px;width:36px;height:36px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-size:18px;z-index:5;padding:0';b.addEventListener('click',ideaOpen);d.appendChild(b)}}
+  if(m==='pomo'&&d){if(!b){b=document.createElement('button');b.id='bgidea';b.type='button';b.textContent='💭';b.title=T('Ghi nhanh ý nghĩ','Jot a thought');b.setAttribute('aria-label',T('Ghi nhanh ý nghĩ','Jot a thought'));b.style.cssText='position:absolute;top:12px;right:56px;width:36px;height:36px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-size:18px;z-index:5;padding:0';b.addEventListener('click',ideaOpen);d.appendChild(b)}ideaBadge()}
   else if(b&&b.parentNode)b.parentNode.removeChild(b);
 }
 /* ---- nghỉ có ích ---- */
@@ -4433,6 +4450,7 @@ function restUI(){
   document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#restsug [data-w]');if(!b)return;addWater(parseInt(b.getAttribute('data-w'),10));show()});
   new MutationObserver(function(){if(d.getAttribute('data-state')==='rest')show();else hide()}).observe(d,{attributes:true,attributeFilter:['data-state']});
 }
+window.addEventListener('storage',function(e){if(e.key==='bg2x-todo')ideaBadge()});
 if(!B.host){var tb0=tabsEl();if(tb0){new MutationObserver(ideaUI).observe(tb0,{attributes:true,subtree:true,attributeFilter:['aria-selected']});setTimeout(ideaUI,500)}setTimeout(restUI,600)}
 /* ---- thanh lệnh nhanh ---- */
 function nz(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d')}
@@ -4527,7 +4545,7 @@ if(B.emb){
     if(g){for(var k in g){if(g[k].m.indexOf(m)>=0){n=g[k].i+' '+(en()?n:n);break}}}
     try{parent.postMessage({bgws:1,pane:B.pane,mode:m,title:n},'*')}catch(e){}}
   if(tabs){new MutationObserver(post).observe(tabs,{attributes:true,subtree:true,attributeFilter:['aria-selected']});setTimeout(post,300)}
-  var rt=null,st=null,SYNC=/^(bg2x-(todo|habits|water|spaced|sl|plan)|bg-stats|bg-days|bg2-goal)$/,LIVE=['today','todo','habit','water','spaced'];
+  var rt=null,st=null,SYNC=/^(bg2x-(todo|todo-view|habits|water|spaced|sl|plan)|bg-stats|bg-days|bg2-goal)$/,LIVE=['today','todo','habit','water','spaced'];
   window.addEventListener('storage',function(e){
     if(!e.key)return;
     if(e.key==='bg2-theme'||e.key==='bg2-lang'||e.key==='bg2-big'){clearTimeout(rt);rt=setTimeout(function(){location.reload()},500);return}
