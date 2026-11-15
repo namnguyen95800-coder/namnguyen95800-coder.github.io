@@ -4,7 +4,7 @@
    - Mất mạng: trả đúng trang đã lưu, không có thì trả trang chủ
    Đổi VERSION mỗi khi muốn xoá sạch cache cũ.
 */
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL = 'shell-' + VERSION;
 const RUNTIME = 'runtime-' + VERSION;
 const SHELL_FILES = ['./', 'index.html', 'app.css', 'app.js', 'manifest.json', 'icon-192.png', 'icon-512.png'];

@@ -2903,8 +2903,7 @@ function toolName(m){return NAMES[m]||(function(){var t=tabOf(m);return t?t.text
     var mainL=filtered,restL=[];
  if(!q&&useTotal()>=20){var nw=Date.now(),sc={};filtered.forEach(function(m){sc[m]=useScore(m,nw)});
   var ord=filtered.slice().sort(function(a,b){return sc[b]-sc[a]||ALL.indexOf(a)-ALL.indexOf(b)});
-  mainL=ord.filter(function(m){return sc[m]>=0.3||favs.indexOf(m)>=0});restL=ord.filter(function(m){return mainL.indexOf(m)<0});
-  if(mainL.length<4){mainL=ord.slice(0,4);restL=ord.slice(4)}}
+  var ug=useGet();restL=ord.filter(function(m){return ug[m]&&ug[m].c>=1&&sc[m]<0.12&&favs.indexOf(m)<0});mainL=ord.filter(function(m){return restL.indexOf(m)<0})}
  renderGrid(grid,mainL);
  if(restL.length)grid.insertAdjacentHTML('beforeend','<details class="seldom"><summary><span>Ít dùng</span> <span>('+restL.length+')</span></summary><div class="sheet-grid">'+restL.map(card).join('')+'</div></details>');
     var favL=favs.filter(function(m){return ALL.indexOf(m)>=0&&m!==''&&(activeFilter==='all'||CATS[m]===activeFilter)}),recL=recent.filter(function(m){return ALL.indexOf(m)>=0&&m!==''&&(activeFilter==='all'||CATS[m]===activeFilter)}).slice(0,5); renderGrid(favGrid,favL);
